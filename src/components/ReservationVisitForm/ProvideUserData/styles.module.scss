@@ -1,0 +1,33 @@
+.provideUserData {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0; // From animation
+
+  h2 {
+    font-size: 42px;
+    margin-bottom: 25px;
+    color: #00a1e6;
+  }
+
+  form {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 0px auto 0px auto;
+
+    .inputRow {
+      width: 100%;
+      height: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.button {
+  width: auto;
+  height: auto;
+  border-radius: 3px;
+  padding: 8px 24px 8px 24px;
+  font-size: 18px;
+  color: white;
+  background-color: #00a1e6;
+  transition: 250ms;
+  border: none;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
+}

@@ -1,0 +1,46 @@
+.inputWrapper {
+  $outline-width: 2px;
+
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: hidden;
+  padding: $outline-width;
+
+  input {
+    outline: none;
+    border: none;
+    order: 2;
+    border-radius: 3px;
+    padding: 4px 8px 4px 8px;
+    font-size: 18px;
+    border: solid 1px #b3b3b3;
+    transition: 250ms;
+    outline: $outline-width solid rgba(255, 255, 255, 0);
+  }
+
+  input:not(:placeholder-shown) {
+    outline: $outline-width solid #00a1e6;
+    border: solid 1px transparent;
+
+    + label {
+      transform: translateX(0%);
+    }
+  }
+
+  input:focus {
+    border: solid 1px transparent;
+    outline: $outline-width solid #00a1e6;
+  }
+
+  label {
+    width: fit-content;
+    height: auto;
+    order: 1;
+    transition: 250ms;
+    transform: translateX(calc(-100% - $outline-width));
+    color: #00a1e6;
+  }
+}

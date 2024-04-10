@@ -1,0 +1,119 @@
+.chooseTrack {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  opacity: 0; // From animation
+
+  h2 {
+    font-size: 42px;
+    margin-bottom: 25px;
+    color: #00a1e6;
+  }
+
+  h3 {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 25px;
+    color: #00a1e6;
+  }
+
+  .tiles {
+    width: fit-content;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    margin: 0px auto 25px auto;
+    flex-wrap: wrap;
+
+    .tile {
+      width: 125px;
+      height: auto;
+      aspect-ratio: 1/1;
+      background-color: #00a1e6;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-direction: column;
+      border-radius: 4px;
+      cursor: pointer;
+      padding-bottom: 8px;
+      opacity: 0.5;
+      transition: 250ms;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      .iconWrapper {
+        width: 100%;
+        height: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        &::after {
+          content: attr(data-length);
+          width: 45%;
+          height: auto;
+          aspect-ratio: 1/1;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: black;
+          border-radius: 100%;
+          background-color: #00a1e6;
+          color: white;
+          font-size: 32px;
+          font-weight: 500;
+        }
+
+        i {
+          font-size: 100px;
+          color: white;
+          transform: rotateX(30deg);
+        }
+      }
+
+      p {
+        font-weight: 500;
+        font-size: 18px;
+        color: white;
+      }
+    }
+
+    .tile:nth-child(1) {
+      .imageWrapper {
+        transform: rotate(-15deg);
+      }
+    }
+
+    .tile:nth-child(2) {
+      .imageWrapper {
+        width: 80%;
+        transform: rotate(15deg);
+      }
+    }
+
+    .tile.choosen {
+      opacity: 1;
+    }
+  }
+}
