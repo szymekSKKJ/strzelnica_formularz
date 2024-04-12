@@ -1,0 +1,49 @@
+.adminPanel {
+  width: 100%;
+  height: auto;
+
+  .buttons {
+    width: auto;
+    height: auto;
+    display: flex;
+    gap: 25px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    a {
+      button {
+        width: 200px;
+        height: auto;
+        aspect-ratio: 1/1;
+        position: relative;
+        container-type: inline-size;
+        font-size: 22px;
+        font-weight: 600;
+
+        .iconWrapper {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          opacity: 0.33;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          i {
+            font-size: 80cqw;
+          }
+
+          img {
+            width: 100cqw;
+            height: auto;
+            filter: grayscale(100%) invert(100%);
+            transform: translateY(10px);
+          }
+        }
+      }
+    }
+  }
+}

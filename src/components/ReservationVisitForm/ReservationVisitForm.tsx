@@ -10,6 +10,8 @@ import Button from "../UI/Button/Button";
 import "./animationsForComponentsTranstion.scss";
 import ChoosDate from "./ChoosDate/ChoosDate";
 import { Roboto } from "next/font/google";
+import { weaponAdd } from "@/app/api/weapon/add/route";
+import { revalidateData } from "@/app/api/revalidate/route";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["100", "300", "400", "500", "700", "900"] });
 
@@ -60,14 +62,8 @@ const ReservationVisitForm = () => {
 
   const [componentsTransitionContext, setComponentsTransitionContext] = useState();
 
-  // const buttonElementRef = useRef<null | HTMLButtonElement>(null);
-
   const nextStage = stages[stages.findIndex((data) => data.id === currentStageId) + 1];
   const previousStage = stages[stages.findIndex((data) => data.id === currentStageId) - 1];
-
-  // useEffect(() => {
-  //   buttonElementRef.current = document.querySelector("#setNextStageButton");
-  // }, []);
 
   return (
     <div className={`${styles.reservationVisitForm}`}>

@@ -1,0 +1,35 @@
+.dataEditor {
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  .header {
+    width: 100%;
+    height: auto;
+    padding: 8px 24px 8px 24px;
+    position: sticky;
+    top: 0px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 10000;
+    background-color: #e6e6e6;
+
+    button.save {
+      margin-left: auto;
+    }
+  }
+
+  h2 {
+    font-size: 36px;
+    color: #00a1e6;
+    padding: 10px 10px 20px 10px;
+  }
+
+  .tableWrapper {
+    width: 100%;
+    height: 100%;
+  }
+}

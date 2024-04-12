@@ -1,3 +1,5 @@
+"use client";
+
 import { HtmlHTMLAttributes, MutableRefObject, ReactNode } from "react";
 import styles from "./styles.module.scss";
 import { TransitionButton } from "react-components-transition";
@@ -21,7 +23,7 @@ interface componentProps extends HtmlHTMLAttributes<HTMLButtonElement> {
   show?: string;
 }
 
-const Button = ({ children, show, context, animationIn, animationOut, ...rest }: componentProps) => {
+const Button = ({ children, show, context, animationIn, animationOut, className, ...rest }: componentProps) => {
   if (show) {
     return (
       <TransitionButton
@@ -29,7 +31,7 @@ const Button = ({ children, show, context, animationIn, animationOut, ...rest }:
         animationIn={animationIn}
         context={context}
         show={show}
-        className={`${styles.button} ${varela_Round.className}`}
+        className={`${styles.button} ${varela_Round.className} ${className}`}
         {...rest}>
         {children}
         <ClickEffect></ClickEffect>
@@ -37,7 +39,7 @@ const Button = ({ children, show, context, animationIn, animationOut, ...rest }:
     );
   } else {
     return (
-      <button className={`${styles.button} ${varela_Round.className}`} {...rest}>
+      <button className={`${styles.button} ${varela_Round.className} ${className}`} {...rest}>
         {children}
         <ClickEffect></ClickEffect>
       </button>

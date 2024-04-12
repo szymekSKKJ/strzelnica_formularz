@@ -4,9 +4,51 @@ datasource db {
 }
 
 generator client {
-    provider = "prisma-client-js"
+    provider   = "prisma-client-js"
+    engineType = "library"
 }
 
-model User {
-    id String @id @default(uuid())
+model Weapon {
+    id           String                 @id @default(uuid())
+    caliber      String
+    type         WeaponType
+    manufacturer ManufacturerOfWeapon[]
+    model        String                 @unique
+    quantity     Int
+    rentalCost   Decimal
+    ammunition   Ammunition             @relation(fields: [caliber], references: [caliber])
+}
+
+enum WeaponType {
+    pistolet
+    karabin
+}
+
+model ManufacturerOfWeapon {
+    id     String   @id @default(uuid())
+    name   String   @unique
+    Weapon Weapon[]
+}
+
+model Ammunition {
+    id            String                     @id @default(uuid())
+    name          String
+    caliber       String                     @unique
+    manufacturer  ManufacturerOfAmmunition[]
+    quantityTotal Int
+    pricePerItem  Decimal
+    type          AmmunitionType
+    Weapon        Weapon[]
+}
+
+enum AmmunitionType {
+    pistoletowa
+    karabinowa
+}
+
+model ManufacturerOfAmmunition {
+    id         String       @id @default(uuid())
+    name       String       @unique
+    ammunition Ammunition[]
+    quantity   Int
 }
