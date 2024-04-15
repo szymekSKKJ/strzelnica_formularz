@@ -1,8 +1,5 @@
-import { revalidatePath, revalidateTag } from "next/cache";
 import "./global.scss";
 import { Roboto } from "next/font/google";
-import { manufacturerOfWeaponGetAll } from "./api/manufacturerOfWeapon/get/some/route";
-import { revalidateData } from "./api/revalidate/route";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["100", "300", "400", "500", "700", "900"] });
 
