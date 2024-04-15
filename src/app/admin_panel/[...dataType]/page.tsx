@@ -1,5 +1,5 @@
-import { manufacturerOfWeaponGetAll } from "@/app/api/manufacturerOfWeapon/get/all/route";
-import DataEditor from "@/components/AdminPanel/DataEditor/DataEditor";
+import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
+import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
 
 interface componentProps {
   params: { dataType: string[] };
@@ -9,36 +9,38 @@ const availableRoutes = [
   {
     route: "producenci_broni",
     title: "Producenci broni",
-    columnHeaders: ["id", "name", "delete"],
-    dataCallback: async () => {
-      return await manufacturerOfWeaponGetAll();
+    getDataCallback: async () => {
+      return await manufacturerOfWeaponGetSome(11);
     },
+    editor: ManufacturerOfWeaponEditor,
   },
   {
     route: "producenci_amunicji",
     title: "Producenci amunicji",
-    columnHeaders: [""],
-    dataCallback: async () => {
-      return await manufacturerOfWeaponGetAll();
+    getDataCallback: async () => {
+      return await manufacturerOfWeaponGetSome();
     },
+    editor: ManufacturerOfWeaponEditor,
   },
   {
     route: "bronie",
     title: "Bronie",
-    columnHeaders: [""],
-    dataCallback: async () => {
-      return await manufacturerOfWeaponGetAll();
+    getDataCallback: async () => {
+      return await manufacturerOfWeaponGetSome();
     },
+    editor: ManufacturerOfWeaponEditor,
   },
   {
     route: "amunicnja",
     title: "Amunicja",
-    columnHeaders: [""],
-    dataCallback: async () => {
-      return await manufacturerOfWeaponGetAll();
+    getDataCallback: async () => {
+      return await manufacturerOfWeaponGetSome();
     },
+    editor: ManufacturerOfWeaponEditor,
   },
 ];
+
+export const availableRoutesOnlyRoutes = availableRoutes.map((data) => data.route);
 
 const DataTypePage = async ({ params: { dataType } }: componentProps) => {
   const firstRouteSegment = dataType[0];
@@ -46,12 +48,12 @@ const DataTypePage = async ({ params: { dataType } }: componentProps) => {
   const foundRoute = availableRoutes.find((data) => data.route === firstRouteSegment);
 
   if (foundRoute) {
-    const dataResponse = await foundRoute.dataCallback();
+    const dataResponse = await foundRoute.getDataCallback();
 
-    const { columnHeaders, title } = foundRoute;
+    const { route, title, editor: Editor } = foundRoute;
 
     if (dataResponse.error === null) {
-      return <DataEditor data={dataResponse.data!} title={title} columnHeaders={columnHeaders}></DataEditor>;
+      return <Editor data={dataResponse.data!}></Editor>;
     } else {
       return <p>Wystąpił błąd. Spróbuj ponownie</p>;
     }

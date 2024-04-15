@@ -15,7 +15,7 @@ const POST = async (request: NextRequest) => {
     });
 
     if (doesAlreadyExists) {
-      throw new Error("Ten producent jest już dodany");
+      throw new Error(`Producent "${name}" jest już dodany`);
     } else {
       const response = await prisma.manufacturerOfWeapon.create({
         data: {

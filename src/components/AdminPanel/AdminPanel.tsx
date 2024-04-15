@@ -8,7 +8,7 @@ const AdminPanel = () => {
   const buttonsData = [
     {
       id: 1,
-      href: "/",
+      href: "/admin_panel/producenci_broni",
       title: "Producenci broni",
       icon: <i className="fa-solid fa-gun"></i>,
     },
