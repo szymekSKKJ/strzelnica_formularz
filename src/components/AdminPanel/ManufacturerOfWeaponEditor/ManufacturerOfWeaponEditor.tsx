@@ -173,7 +173,7 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
               ).then((data) => data.filter((data) => data !== undefined));
 
               const mergedArrays = mergeArrays(
-                rowData,
+                rowData.filter((data) => data.isEditable === false),
                 addedRows.map((data) => {
                   return {
                     ...data,
