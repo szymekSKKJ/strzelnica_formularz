@@ -4,7 +4,7 @@ import { manufacturerOfWeaponAdd } from "@/app/api/manufacturerOfWeapon/add/rout
 import { ValueSetterParams } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
 import { useRef, useState } from "react";
-import Button from "../../../../strzelnica_formularz/src/components/UI/Button/Button";
+
 import styles from "./styles.module.scss";
 import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
@@ -13,6 +13,7 @@ import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-mod
 import { useRouter } from "next/navigation";
 import { manufacturerOfWeaponDelete } from "@/app/api/manufacturerOfWeapon/delete/route";
 import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
+import Button from "@/components/UI/Button/Button";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
