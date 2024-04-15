@@ -3,15 +3,13 @@
 import { manufacturerOfWeaponAdd } from "@/app/api/manufacturerOfWeapon/add/route";
 import { ValueSetterParams } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
-import { title } from "process";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Button from "../../../../strzelnica_formularz/src/components/UI/Button/Button";
 import styles from "./styles.module.scss";
 import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
 import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
-import { EditableCallbackParams, ModuleRegistry, RowClassRules, ValueGetterParams } from "@ag-grid-community/core";
+import { ModuleRegistry } from "@ag-grid-community/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import { revalidateData } from "@/app/api/revalidate/route";
 import { useRouter } from "next/navigation";
 import { manufacturerOfWeaponDelete } from "@/app/api/manufacturerOfWeapon/delete/route";
 import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
