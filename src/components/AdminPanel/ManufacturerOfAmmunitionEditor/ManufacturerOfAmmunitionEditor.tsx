@@ -3,7 +3,7 @@
 import Button from "@/components/UI/Button/Button";
 import styles from "./styles.module.scss";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AgGridReact } from "@ag-grid-community/react";
 import { ValueSetterParams } from "@ag-grid-community/core";
 import { manufacturerOfAmmunitionAdd } from "@/app/api/manufacturerOfAmmunition/add/route";
@@ -108,6 +108,14 @@ const ManufacturerOfAmmunitionEditor = ({ data }: componentProps) => {
   const [skip, setSkip] = useState(0);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [areAllDataGot, setAreAllDataGot] = useState(false);
+
+  useEffect(() => {
+    router.refresh();
+
+    return () => {
+      router.refresh();
+    };
+  }, []);
 
   return (
     <div className={`${styles.manufacturerOfAmmunitionEditor}`}>

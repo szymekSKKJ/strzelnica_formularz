@@ -3,7 +3,7 @@
 import { manufacturerOfWeaponAdd } from "@/app/api/manufacturerOfWeapon/add/route";
 import { ValueSetterParams } from "@ag-grid-community/core";
 import { AgGridReact } from "@ag-grid-community/react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import styles from "./styles.module.scss";
 import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
@@ -109,6 +109,14 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
   const [skip, setSkip] = useState(0);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [areAllDataGot, setAreAllDataGot] = useState(false);
+
+  useEffect(() => {
+    router.refresh();
+
+    return () => {
+      router.refresh();
+    };
+  }, []);
 
   return (
     <div className={`${styles.manufacturerOfWeaponEditor}`}>

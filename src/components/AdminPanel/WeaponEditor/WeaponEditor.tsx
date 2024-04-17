@@ -230,6 +230,14 @@ const WeaponEditor = ({ data }: componentProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    router.refresh();
+
+    return () => {
+      router.refresh();
+    };
+  }, []);
+
   return (
     <div className={`${styles.weaponEditor}`}>
       {isEditorReady && (

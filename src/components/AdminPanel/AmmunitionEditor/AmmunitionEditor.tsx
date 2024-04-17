@@ -206,6 +206,14 @@ const AmmunitionEditor = ({ data }: componentProps) => {
   const [areAllDataGot, setAreAllDataGot] = useState(false);
 
   useEffect(() => {
+    router.refresh();
+
+    return () => {
+      router.refresh();
+    };
+  }, []);
+
+  useEffect(() => {
     const timeout = setTimeout(async () => {
       const response = await manufacturerOfAmmunitionGetSome(1000);
 
