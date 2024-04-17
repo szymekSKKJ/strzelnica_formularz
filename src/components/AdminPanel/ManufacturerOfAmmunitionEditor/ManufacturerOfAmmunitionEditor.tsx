@@ -1,21 +1,14 @@
 "use client";
 
-import { manufacturerOfWeaponAdd } from "@/app/api/manufacturerOfWeapon/add/route";
-import { ValueSetterParams } from "@ag-grid-community/core";
-import { AgGridReact } from "@ag-grid-community/react";
-import { useRef, useState } from "react";
-
-import styles from "./styles.module.scss";
-import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
-import "@ag-grid-community/styles/ag-theme-quartz.css"; // Theme
-import { ModuleRegistry } from "@ag-grid-community/core";
-import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
-import { useRouter } from "next/navigation";
-import { manufacturerOfWeaponDelete } from "@/app/api/manufacturerOfWeapon/delete/route";
-import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
 import Button from "@/components/UI/Button/Button";
-
-ModuleRegistry.registerModules([ClientSideRowModelModule]);
+import styles from "./styles.module.scss";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { AgGridReact } from "@ag-grid-community/react";
+import { ValueSetterParams } from "@ag-grid-community/core";
+import { manufacturerOfAmmunitionAdd } from "@/app/api/manufacturerOfAmmunition/add/route";
+import { manufacturerOfAmmunitionDelete } from "@/app/api/manufacturerOfAmmunition/delete/route";
+import { manufacturerOfAmmunitionGetSome } from "@/app/api/manufacturerOfAmmunition/get/some/route";
 
 const mergeArrays = <T,>(arr1: T[], arr2: T[], key: keyof T) => {
   const merged = arr1.concat(arr2);
@@ -39,6 +32,10 @@ const columnHeaders = [
     cellRenderer: null,
     cellEditor: null,
     valueSetter: null,
+    valueFormatter: null,
+    resizable: true,
+    minWidth: null,
+    maxWidth: null,
   },
   {
     field: "name",
@@ -50,6 +47,11 @@ const columnHeaders = [
     cellRenderer: null,
     cellEditor: null,
     valueSetter: null,
+    cellEditorParams: null,
+    valueFormatter: null,
+    resizable: true,
+    minWidth: null,
+    maxWidth: null,
   },
   {
     field: "select",
@@ -66,19 +68,22 @@ const columnHeaders = [
       }
       return true;
     },
+    cellEditorParams: null,
+    valueFormatter: null,
+    resizable: false,
+    minWidth: 100,
+    maxWidth: 100,
   },
 ];
 
-type ManufacturerOfWeapon = {
-  id: string;
-  name: string | null;
-};
-
 interface componentProps {
-  data: ManufacturerOfWeapon[];
+  data: {
+    id: string;
+    name: string | null;
+  }[];
 }
 
-const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
+const ManufacturerOfAmmunitionEditor = ({ data }: componentProps) => {
   const router = useRouter();
 
   const formattedData = data.map((data) => {
@@ -94,24 +99,18 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
   const [rowData, setRowData] = useState(formattedData);
   const [columnDefs, setColDefs] = useState(
     columnHeaders.map((data) => {
-      const { field, headerName, editable, flex, cellRenderer, valueSetter } = data;
-
       return {
-        field: field,
-        headerName: headerName,
-        flex: flex,
-        valueSetter: valueSetter,
-        editable: editable,
-        cellRenderer: cellRenderer,
+        ...data,
       };
     })
   );
+
   const [skip, setSkip] = useState(0);
   const [paginationPageSize, setPaginationPageSize] = useState(10);
   const [areAllDataGot, setAreAllDataGot] = useState(false);
 
   return (
-    <div className={`${styles.manufacturerOfWeaponEditor}`}>
+    <div className={`${styles.manufacturerOfAmmunitionEditor}`}>
       <div className={`${styles.header}`}>
         <Button
           onClick={() => {
@@ -139,87 +138,73 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
         <Button
           className={`${styles.save}`}
           onClick={async () => {
-            const isAnyRowInvalid = rowData.find((data) => {
-              const { isEditable } = data;
+            const rowsToAdd = rowData.filter((data) => data.isEditable);
 
-              if (isEditable === true) {
-                const isAnyCellEmpty = Object.values(data).some((value) => {
-                  if (value === null || value === undefined) {
-                    return true;
-                  } else if (value.toString().trim().length === 0) {
-                    return true;
-                  }
-                });
-
-                if (isAnyCellEmpty) {
+            const isAnyCellEmpty = rowsToAdd.find((data) => {
+              return Object.values(data).some((value) => {
+                if (value === null) {
+                  return true;
+                } else if (typeof value === "string" && value.trim().length === 0) {
                   return true;
                 }
-              }
+              });
             });
 
-            if (isAnyRowInvalid === undefined) {
-              const rowsToAdd = rowData.filter((data) => data.isEditable);
+            if (isAnyCellEmpty === undefined) {
+              const addedRows: { id: string; name: string }[] = [];
 
-              const addedRows = await Promise.all(
+              await Promise.all(
                 rowsToAdd.map(async (data) => {
                   const { name } = data;
 
-                  const dataResponse = await manufacturerOfWeaponAdd(name!.toLocaleLowerCase());
+                  const response = await manufacturerOfAmmunitionAdd(name!.toLocaleLowerCase());
 
-                  if (dataResponse.error === null) {
-                    return dataResponse.data!;
+                  if (response.error === null) {
+                    addedRows.push(response.data!);
                   }
                 })
-              ).then((data) => data.filter((data) => data !== undefined));
+              );
 
-              const mergedArrays = mergeArrays(
-                rowData.filter((data) => data.isEditable === false),
-                addedRows.map((data) => {
-                  return {
+              setRowData((currentValue) => {
+                const copiedCurrentValue = structuredClone(currentValue);
+
+                const copiedCurrentValueWithoutEditable = copiedCurrentValue.filter((data) => data.isEditable === false);
+
+                addedRows.forEach((data) => {
+                  copiedCurrentValueWithoutEditable.unshift({
                     ...data,
                     isEditable: false,
                     isSelected: false,
-                  };
-                }),
-                "id"
-              );
+                  });
+                });
 
-              setRowData(mergedArrays);
+                return copiedCurrentValueWithoutEditable;
+              });
             }
           }}>
           Zapisz
         </Button>
       </div>
-      <h2>Producenci broni</h2>
+      <h2>Producenci amunicji</h2>
       <div className={`${styles.selectedItemsActions}`}>
         <button
           className={`${styles.delete}`}
           onClick={async () => {
-            const selectedData = rowData.filter((data) => data.isSelected);
+            const rowsToDelete = rowData.filter((data) => data.isSelected);
 
             await Promise.all(
-              selectedData.map(async (data) => {
-                if (data.isEditable === false) {
-                  const k = await manufacturerOfWeaponDelete(data.id);
-                  console.log(k);
-                }
+              rowsToDelete.map(async (data) => {
+                const { id } = data;
+                await manufacturerOfAmmunitionDelete(id);
               })
             );
 
             setRowData((currentValue) => {
               const copiedCurrentValue = structuredClone(currentValue);
 
-              const dataAfterRemove = copiedCurrentValue.filter((data, index) => {
-                const foundElement = selectedData.find((dataLocal) => dataLocal.id === data.id);
+              const copiedCurrentValueWithoutSelected = copiedCurrentValue.filter((data) => data.isSelected === false);
 
-                if (foundElement) {
-                  return false;
-                } else {
-                  return true;
-                }
-              });
-
-              return dataAfterRemove;
+              return copiedCurrentValueWithoutSelected;
             });
           }}>
           <i className="fa-regular fa-trash-can"></i>
@@ -234,7 +219,7 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
                 const newSkipValue = (event.api.paginationGetCurrentPage() + 1) * event.api.paginationGetPageSize() - currentPaginationPageSizeValue + 1;
 
                 if (areAllDataGot === false) {
-                  const response = await manufacturerOfWeaponGetSome(currentPaginationPageSizeValue, newSkipValue);
+                  const response = await manufacturerOfAmmunitionGetSome(currentPaginationPageSizeValue, newSkipValue);
 
                   if (response.error === null) {
                     const mergedArrays = mergeArrays(
@@ -264,7 +249,7 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
                 setSkip(currentSkipValue);
 
                 if (areAllDataGot === false) {
-                  const response = await manufacturerOfWeaponGetSome(paginationPageSize, currentSkipValue + 1);
+                  const response = await manufacturerOfAmmunitionGetSome(paginationPageSize, currentSkipValue + 1);
 
                   if (response.error === null) {
                     const mergedArrays = mergeArrays(
@@ -313,4 +298,4 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
   );
 };
 
-export default ManufacturerOfWeaponEditor;
+export default ManufacturerOfAmmunitionEditor;

@@ -1,5 +1,13 @@
+import { ammunitionGetSome } from "@/app/api/ammunition/get/some/route";
+import { manufacturerOfAmmunitionGetSome } from "@/app/api/manufacturerOfAmmunition/get/some/route";
 import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
+import { weaponGetSome } from "@/app/api/weapon/get/some/route";
+import AmmunitionEditor from "@/components/AdminPanel/AmmunitionEditor/AmmunitionEditor";
+import ManufacturerOfAmmunitionEditor from "@/components/AdminPanel/ManufacturerOfAmmunitionEditor/ManufacturerOfAmmunitionEditor";
+
 import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
+import WeaponEditor from "@/components/AdminPanel/WeaponEditor/WeaponEditor";
+import { randomUUID } from "crypto";
 
 interface componentProps {
   params: { dataType: string[] };
@@ -10,7 +18,7 @@ const availableRoutes = [
     route: "producenci_broni",
     title: "Producenci broni",
     getDataCallback: async () => {
-      return await manufacturerOfWeaponGetSome(11);
+      return await manufacturerOfWeaponGetSome();
     },
     editor: ManufacturerOfWeaponEditor,
   },
@@ -18,29 +26,27 @@ const availableRoutes = [
     route: "producenci_amunicji",
     title: "Producenci amunicji",
     getDataCallback: async () => {
-      return await manufacturerOfWeaponGetSome();
+      return manufacturerOfAmmunitionGetSome();
     },
-    editor: ManufacturerOfWeaponEditor,
+    editor: ManufacturerOfAmmunitionEditor,
   },
   {
     route: "bronie",
     title: "Bronie",
     getDataCallback: async () => {
-      return await manufacturerOfWeaponGetSome();
+      return await weaponGetSome();
     },
-    editor: ManufacturerOfWeaponEditor,
+    editor: WeaponEditor,
   },
   {
-    route: "amunicnja",
+    route: "amunicja",
     title: "Amunicja",
     getDataCallback: async () => {
-      return await manufacturerOfWeaponGetSome();
+      return await ammunitionGetSome();
     },
-    editor: ManufacturerOfWeaponEditor,
+    editor: AmmunitionEditor,
   },
 ];
-
-export const availableRoutesOnlyRoutes = availableRoutes.map((data) => data.route);
 
 const DataTypePage = async ({ params: { dataType } }: componentProps) => {
   const firstRouteSegment = dataType[0];
@@ -50,9 +56,10 @@ const DataTypePage = async ({ params: { dataType } }: componentProps) => {
   if (foundRoute) {
     const dataResponse = await foundRoute.getDataCallback();
 
-    const { route, title, editor: Editor } = foundRoute;
+    const { editor: Editor } = foundRoute;
 
     if (dataResponse.error === null) {
+      //@ts-ignore
       return <Editor data={dataResponse.data!}></Editor>;
     } else {
       return <p>Wystąpił błąd. Spróbuj ponownie</p>;

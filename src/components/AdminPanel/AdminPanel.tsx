@@ -14,19 +14,19 @@ const AdminPanel = () => {
     },
     {
       id: 2,
-      href: "/",
+      href: "/admin_panel/producenci_amunicji",
       title: "Producenci amunicji",
       icon: <Image src={ammunitionIcon} alt="Ikona"></Image>,
     },
     {
       id: 3,
-      href: "/",
+      href: "/admin_panel/bronie",
       title: "Bronie",
       icon: <i className="fa-solid fa-gun"></i>,
     },
     {
       id: 4,
-      href: "/",
+      href: "/admin_panel/amunicja",
       title: "Amunicja",
       icon: <Image src={ammunitionIcon} alt="Ikona"></Image>,
     },

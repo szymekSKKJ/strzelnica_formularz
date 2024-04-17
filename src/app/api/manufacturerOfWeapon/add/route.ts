@@ -47,6 +47,7 @@ const manufacturerOfWeaponAdd = async (
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/manufacturerOfWeapon/add`, {
     method: "POST",
     body: formData,
+    cache: "no-cache",
   }).then(async (response) => await response.json());
 };
 

@@ -5,7 +5,10 @@ import createResponse from "../../createResponse";
 const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
+
     const id = formData.get("id") as string;
+
+    console.log(id);
 
     const response = await prisma.manufacturerOfWeapon.delete({
       where: {
@@ -29,6 +32,7 @@ const manufacturerOfWeaponDelete = async (id: string) => {
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/manufacturerOfWeapon/delete`, {
     method: "POST",
     body: formData,
+    cache: "no-cache",
   }).then(async (response) => response.json());
 };
 

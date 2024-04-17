@@ -9,14 +9,18 @@ generator client {
 }
 
 model Weapon {
-    id           String                 @id @default(uuid())
-    caliber      String
-    type         WeaponType
-    manufacturer ManufacturerOfWeapon[]
-    model        String                 @unique
-    quantity     Int
-    rentalCost   Decimal
-    ammunition   Ammunition             @relation(fields: [caliber], references: [caliber])
+    id                       String                @id @default(uuid())
+    caliber                  String
+    type                     WeaponType
+    manufacturer             ManufacturerOfWeapon? @relation(fields: [manufacturerOfWeaponName], references: [name])
+    manufacturerOfWeaponName String?
+    model                    String
+    quantity                 Int
+    rentalCost               Decimal
+    ammunition               Ammunition[]
+
+    @@unique([manufacturerOfWeaponName, model])
+    @@index([manufacturerOfWeaponName, model])
 }
 
 enum WeaponType {
@@ -27,18 +31,22 @@ enum WeaponType {
 model ManufacturerOfWeapon {
     id     String   @id @default(uuid())
     name   String   @unique
-    Weapon Weapon[]
+    weapon Weapon[]
 }
 
 model Ammunition {
-    id            String                     @id @default(uuid())
-    name          String
-    caliber       String                     @unique
-    manufacturer  ManufacturerOfAmmunition[]
-    quantityTotal Int
-    pricePerItem  Decimal
-    type          AmmunitionType
-    Weapon        Weapon[]
+    id                           String                    @id @default(uuid())
+    name                         String
+    caliber                      String
+    manufacturer                 ManufacturerOfAmmunition? @relation(fields: [manufacturerOfAmmunitionName], references: [name])
+    manufacturerOfAmmunitionName String?
+    quantity                     Int
+    pricePerItem                 Decimal
+    type                         AmmunitionType
+    weapon                       Weapon[]
+
+    @@unique([manufacturerOfAmmunitionName, caliber])
+    @@index([manufacturerOfAmmunitionName, caliber])
 }
 
 enum AmmunitionType {
@@ -50,5 +58,4 @@ model ManufacturerOfAmmunition {
     id         String       @id @default(uuid())
     name       String       @unique
     ammunition Ammunition[]
-    quantity   Int
 }
