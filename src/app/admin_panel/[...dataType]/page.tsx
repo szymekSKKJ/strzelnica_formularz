@@ -58,6 +58,8 @@ const DataTypePage = async ({ params: { dataType } }: componentProps) => {
 
     const { editor: Editor } = foundRoute;
 
+    console.log(dataResponse.error);
+
     if (dataResponse.error === null) {
       //@ts-ignore
       return <Editor data={dataResponse.data!}></Editor>;
