@@ -19,6 +19,8 @@ const GET = async (request: NextRequest) => {
 
 export { GET };
 
+export const dynamic = "force-dynamic";
+
 const ammunitionGetCaliberNames = async (): Promise<
   Response<
     {

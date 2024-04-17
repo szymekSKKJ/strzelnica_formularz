@@ -22,6 +22,8 @@ const GET = async (request: NextRequest) => {
 
 export { GET };
 
+export const dynamic = "force-dynamic";
+
 const manufacturerOfWeaponGetSome = async (
   take: number = 50,
   skip: number = 0
