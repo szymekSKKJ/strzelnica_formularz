@@ -7,6 +7,8 @@ import ManufacturerOfAmmunitionEditor from "@/components/AdminPanel/Manufacturer
 import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
 import WeaponEditor from "@/components/AdminPanel/WeaponEditor/WeaponEditor";
 
+export const dynamic = "force-dynamic";
+
 interface componentProps {
   params: { dataType: string[] };
 }
