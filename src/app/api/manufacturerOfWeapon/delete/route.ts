@@ -32,7 +32,7 @@ const manufacturerOfWeaponDelete = async (id: string) => {
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/manufacturerOfWeapon/delete`, {
     method: "POST",
     body: formData,
-    cache: "no-cache",
+    cache: "no-store",
   }).then(async (response) => response.json());
 };
 

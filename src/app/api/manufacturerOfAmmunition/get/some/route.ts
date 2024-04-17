@@ -34,7 +34,7 @@ const manufacturerOfAmmunitionGetSome = async (
   >
 > => {
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/manufacturerOfAmmunition/get/some/?take=${take}&skip=${skip}`, {
-    cache: "no-cache",
+    cache: "no-store",
   }).then(async (response) => await response.json());
 };
 

@@ -4,10 +4,8 @@ import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/
 import { weaponGetSome } from "@/app/api/weapon/get/some/route";
 import AmmunitionEditor from "@/components/AdminPanel/AmmunitionEditor/AmmunitionEditor";
 import ManufacturerOfAmmunitionEditor from "@/components/AdminPanel/ManufacturerOfAmmunitionEditor/ManufacturerOfAmmunitionEditor";
-
 import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
 import WeaponEditor from "@/components/AdminPanel/WeaponEditor/WeaponEditor";
-import { randomUUID } from "crypto";
 
 interface componentProps {
   params: { dataType: string[] };

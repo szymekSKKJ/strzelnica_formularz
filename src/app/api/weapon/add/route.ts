@@ -116,7 +116,7 @@ const weaponAdd = async (
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/weapon/add`, {
     method: "POST",
     body: formData,
-    cache: "no-cache",
+    cache: "no-store",
   }).then(async (respone) => await respone.json());
 };
 

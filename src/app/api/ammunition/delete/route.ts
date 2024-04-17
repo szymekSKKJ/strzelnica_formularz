@@ -30,7 +30,7 @@ const ammunitionDelete = async (id: string) => {
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/ammunition/delete`, {
     method: "POST",
     body: formData,
-    cache: "no-cache",
+    cache: "no-store",
   }).then(async (response) => await response.json());
 };
 

@@ -27,7 +27,7 @@ const ammunitionGetCaliberNames = async (): Promise<
   >
 > => {
   return await fetch(`${process.env.NEXT_PUBLIC_URL}/api/ammunition/get/caliberNames`, {
-    cache: "no-cache",
+    cache: "no-store",
   }).then(async (response) => await response.json());
 };
 
