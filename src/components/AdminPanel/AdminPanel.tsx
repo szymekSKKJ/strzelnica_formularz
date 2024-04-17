@@ -39,7 +39,7 @@ const AdminPanel = () => {
           const { id, href, title, icon } = data;
 
           return (
-            <Link key={id} href={href}>
+            <Link key={id} href={href} prefetch={false}>
               <Button>
                 <div className={`${styles.iconWrapper}`}>{icon}</div>
                 {title}
