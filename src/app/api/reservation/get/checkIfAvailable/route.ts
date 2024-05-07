@@ -109,13 +109,12 @@ const reservationGetCheckIfAvailable = async (
   }>
 > => {
   const formData = new FormData();
-  const request = new Request(`${process.env.NEXT_PUBLIC_URL}/api/reservation/get/checkIfAvailable`);
 
   formData.set(`bookedForStart`, `${bookedForStart}`);
   formData.set(`bookedForEnd`, `${bookedForEnd}`);
   formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
 
-  return await fetch(request, {
+  return await fetch(new Request(`${process.env.NEXT_PUBLIC_URL}/api/checkIfAvailable`), {
     method: "POST",
     body: formData,
     cache: "no-store",
