@@ -90,6 +90,8 @@ const POST = async (request: NextRequest) => {
 
 export { POST };
 
+export const dynamic = "force-dynamic";
+
 const reservationGetCheckIfAvailable = async (
   bookedForStart: Date,
   bookedForEnd: Date,
