@@ -87,7 +87,7 @@ const POST = async (request: NextRequest) => {
 
     return createResponse(null, { notAvailableWeapons: modifiedWeaponsThatAreNotAvailable, availableTrack: prismaResponse2 });
   } catch (error) {
-    return createResponse(`${error}`, null);
+    return createResponse(`c ${error}`, null);
   }
 };
 
