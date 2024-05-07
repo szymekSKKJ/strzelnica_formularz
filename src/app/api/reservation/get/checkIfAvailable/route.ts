@@ -10,6 +10,8 @@ const POST = async (request: NextRequest) => {
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
     const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
 
+    console.log(weaponsId);
+
     bookedForStart.setMilliseconds(0);
     bookedForStart.setSeconds(0);
 
