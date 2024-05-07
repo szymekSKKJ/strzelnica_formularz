@@ -37,7 +37,7 @@
     "@preact/signals": "^1.2.3",
     "@preact/signals-react": "^2.0.1",
     "@prisma/client": "^5.12.1",
-    "@szymekskkj/table": "^1.0.10",
+    "@szymekskkj/table": "^1.0.11",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "next": "14.1.4",
