@@ -26,11 +26,13 @@ const reservationDelete = async (id: string): Promise<Response<null>> => {
 
   formData.set("id", `${id}`);
 
-  return await fetch(new Request(`${process.env.NEXT_PUBLIC_URL}/api/reservation/delete`), {
-    method: "POST",
-    body: formData,
-    cache: "no-store",
-  }).then(async (response) => await response.json());
+  return await fetch(
+    new Request(`${process.env.NEXT_PUBLIC_URL}/api/reservation/delete`, {
+      method: "POST",
+      body: formData,
+      cache: "no-store",
+    })
+  ).then(async (response) => await response.json());
 };
 
 export { reservationDelete };
