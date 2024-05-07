@@ -37,7 +37,7 @@ const AdminPanel = () => {
       icon: <i className="fa-solid fa-clock"></i>,
     },
     {
-      id: 5,
+      id: 6,
       href: "/admin_panel/rezerwacje",
       title: "Rezerwacje",
       icon: <i className="fa-solid fa-users"></i>,
