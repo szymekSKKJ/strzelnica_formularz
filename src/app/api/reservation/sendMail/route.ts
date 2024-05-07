@@ -5,9 +5,6 @@ import { createTransport } from "nodemailer";
 const reservationSendMail = async (emailTo: string, htmlContent: string) => {
   const transporter = createTransport({
     service: "gmail",
-    host: "smpt.gmail.com",
-    port: 587,
-    secure: false,
     auth: {
       user: process.env.NODEMAILER_EMAIL,
       pass: process.env.NODEMAILER_PASSWORD,
@@ -15,6 +12,7 @@ const reservationSendMail = async (emailTo: string, htmlContent: string) => {
   });
 
   const message = {
+    from: `s.stepniak01@gmail.com`,
     to: emailTo,
     subject: "Potwierdzenie rezerwacji - strzelnica Precision",
     html: htmlContent,
