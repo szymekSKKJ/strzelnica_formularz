@@ -105,6 +105,8 @@ const POST = async (request: NextRequest) => {
 
 export { POST };
 
+export const dynamic = "force-dynamic";
+
 const reservationAdd = async (
   bookedForStart: Date,
   bookedForEnd: Date,
