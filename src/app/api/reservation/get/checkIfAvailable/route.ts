@@ -3,14 +3,12 @@ import prisma from "@/prisma/prisma";
 import { NextRequest } from "next/server";
 
 const POST = async (request: NextRequest) => {
-  const formData = await request.formData();
-
   try {
+    const formData = await request.formData();
+
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
     const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
-
-    console.log(weaponsId);
 
     bookedForStart.setMilliseconds(0);
     bookedForStart.setSeconds(0);
@@ -87,7 +85,7 @@ const POST = async (request: NextRequest) => {
 
     return createResponse(null, { notAvailableWeapons: modifiedWeaponsThatAreNotAvailable, availableTrack: prismaResponse2 });
   } catch (error) {
-    return createResponse(`c ${error}`, null);
+    return createResponse(`${error}`, null);
   }
 };
 

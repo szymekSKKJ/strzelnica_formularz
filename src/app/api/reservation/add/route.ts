@@ -99,7 +99,7 @@ const POST = async (request: NextRequest) => {
       throw new Error("Wybrane kryteria są nieprawidłowe");
     }
   } catch (error) {
-    return createResponse(`a ${error}`, null);
+    return createResponse(`${error}`, null);
   }
 };
 
