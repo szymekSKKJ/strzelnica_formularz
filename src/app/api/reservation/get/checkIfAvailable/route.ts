@@ -118,9 +118,6 @@ const reservationGetCheckIfAvailable = async (
     method: "POST",
     body: formData,
     cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-    },
   }).then(async (response) => await response.json());
 };
 
