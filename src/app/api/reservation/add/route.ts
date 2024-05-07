@@ -92,7 +92,9 @@ const POST = async (request: NextRequest) => {
       </html>
       `;
 
-      await reservationSendMail(email, htmlContent);
+      const response1 = await reservationSendMail(email, htmlContent);
+
+      console.log(response1);
 
       return createResponse(null, null);
     } else {
