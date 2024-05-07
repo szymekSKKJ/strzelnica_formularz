@@ -2,14 +2,12 @@ import createResponse, { Response } from "@/app/api/createResponse";
 import prisma from "@/prisma/prisma";
 import { NextRequest } from "next/server";
 
-const POST = async (request: NextRequest) => {
+const PUT = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
     const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
-
-    console.log(weaponsId);
 
     bookedForStart.setMilliseconds(0);
     bookedForStart.setSeconds(0);
@@ -90,7 +88,7 @@ const POST = async (request: NextRequest) => {
   }
 };
 
-export { POST };
+export { PUT };
 
 const reservationGetCheckIfAvailable = async (
   bookedForStart: Date,
@@ -117,10 +115,8 @@ const reservationGetCheckIfAvailable = async (
   formData.set(`bookedForEnd`, `${bookedForEnd}`);
   formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
 
-  console.log(weaponsId);
-
   return await fetch(request, {
-    method: "POST",
+    method: "PUT",
     body: formData,
     cache: "no-store",
   }).then(async (response) => await response.json());

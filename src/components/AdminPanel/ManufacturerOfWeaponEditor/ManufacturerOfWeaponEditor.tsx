@@ -209,7 +209,6 @@ const ManufacturerOfWeaponEditor = ({ data }: componentProps) => {
               selectedData.map(async (data) => {
                 if (data.isEditable === false) {
                   const k = await manufacturerOfWeaponDelete(data.id);
-                  console.log(k);
                 }
               })
             );
