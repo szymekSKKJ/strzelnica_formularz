@@ -1,13 +1,59 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
-import { Varela_Round } from "next/font/google";
-import ClickEffect from "@/components/ClickEffect/ClickEffect";
+import ClickEffect from "./ClickEffect/ClickEffect";
 
-const varela_Round = Varela_Round({ subsets: ["latin"], weight: ["400"] });
+// const varela_Round = Varela_Round({ subsets: ["latin"], weight: ["400"] });
+
+const IconLeft = ({ color }: { color: string }) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+      <path
+        fill={color}
+        d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
+      />
+    </svg>
+  );
+};
+
+const IconRight = ({ color }: { color: string }) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+      <path
+        fill={color}
+        d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"
+      />
+    </svg>
+  );
+};
+
+const IconClock = ({ color }: { color: string }) => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+      <path
+        fill={color}
+        d="M464 256A208 208 0 1 1 48 256a208 208 0 1 1 416 0zM0 256a256 256 0 1 0 512 0A256 256 0 1 0 0 256zM232 120V256c0 8 4 15.5 10.7 20l96 64c11 7.4 25.9 4.4 33.3-6.7s4.4-25.9-6.7-33.3L280 243.2V120c0-13.3-10.7-24-24-24s-24 10.7-24 24z"
+      />
+    </svg>
+  );
+};
+
+const IconCalendar = ({ color }: { color: string }) => {
+  return (
+    <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        stroke={color}
+        d="M3 9H21M7 3V5M17 3V5M6 12H8M11 12H13M16 12H18M6 15H8M11 15H13M16 15H18M6 18H8M11 18H13M16 18H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
 
 interface componentProps {
+  initialDate?: Date;
   onSave: (date: Date) => void;
   style?: {
     fontColor: string;
@@ -15,25 +61,36 @@ interface componentProps {
     borderColor?: string;
     hoverColor?: string;
     borderRadius?: string;
+    componentBorderRadius?: string;
   };
+  type?: "date-time" | "only-time" | "only-date";
 }
 
-const DataPicker = ({ onSave, style }: componentProps) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+const DataPicker = ({ onSave, style, initialDate = new Date(), type = "date-time" }: componentProps) => {
+  const [currentDate, setCurrentDate] = useState(initialDate);
   const [areMonthsOpen, setAreMonthsOpen] = useState(false);
   const [areYearsOpen, setAreYearsOpen] = useState(false);
+  const [isTimerOpen, setIsTimerOpen] = useState(type === "only-time" ? true : false);
 
   const componentElementRef = useRef<null | HTMLDivElement>(null);
+  const hoursTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const minutesTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
+  const minutesElementRef = useRef<HTMLDivElement | null>(null);
+  const hoursElementRef = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
     onSave(currentDate);
-  }, [currentDate, onSave]);
+  }, [currentDate]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (componentElementRef.current) {
       style?.hoverColor && componentElementRef.current.style.setProperty("--hover-color", style.hoverColor);
       style?.borderColor && componentElementRef.current.style.setProperty("--border-color", style.borderColor);
       style?.borderRadius && componentElementRef.current.style.setProperty("--border-radius", style.borderRadius);
+      style?.backgrondColor && componentElementRef.current.style.setProperty("--background-color", style.backgrondColor);
+      style?.fontColor && componentElementRef.current.style.setProperty("--font-color", style.fontColor);
+      style?.componentBorderRadius && componentElementRef.current.style.setProperty("--componentBorderRadius", style.componentBorderRadius);
     }
   }, [style]);
 
@@ -65,7 +122,7 @@ const DataPicker = ({ onSave, style }: componentProps) => {
   for (let i = 0; i <= 11; i++) {
     months.push(
       copiedCurrentDate.toLocaleDateString("pl-PL", {
-        month: "long",
+        month: "short",
       })
     );
 
@@ -96,13 +153,14 @@ const DataPicker = ({ onSave, style }: componentProps) => {
     copiedCurrentDate.setDate(copiedCurrentDate.getDate() + 1);
   }
 
+  useEffect(() => {
+    hoursElementRef.current!.scrollTop = ((hoursElementRef.current!.scrollHeight - (hoursElementRef.current!.offsetHeight - 35)) / 24) * currentDate.getHours();
+    minutesElementRef.current!.scrollTop =
+      ((minutesElementRef.current!.scrollHeight - (minutesElementRef.current!.offsetHeight - 36)) / 60) * currentDate.getMinutes();
+  }, []);
+
   return (
-    <div
-      ref={componentElementRef}
-      className={`${styles.dataPicker}`}
-      style={{
-        backgroundColor: style?.backgrondColor,
-      }}>
+    <div ref={componentElementRef} className={`${styles.dataPicker}`} tabIndex={1000}>
       <div className={`${styles.header}`}>
         <button
           onClick={() => {
@@ -126,19 +184,15 @@ const DataPicker = ({ onSave, style }: componentProps) => {
               });
             }
           }}>
-          <i
-            className="fa-solid fa-angle-left"
-            style={{
-              color: style?.fontColor,
-            }}></i>
+          <div className={`${styles.icon}`}>
+            <IconLeft color={style ? style.fontColor : "white"}></IconLeft>
+          </div>
           <ClickEffect></ClickEffect>
         </button>
         <p
           tabIndex={0}
-          className={`${varela_Round.className}`}
-          style={{
-            color: style?.fontColor,
-          }}
+          // className={`${varela_Round.className}`}
+
           onKeyUp={(event) => {
             if (event.key === "Enter") {
               setAreMonthsOpen((currentValue) => {
@@ -186,34 +240,23 @@ const DataPicker = ({ onSave, style }: componentProps) => {
               });
             }
           }}>
-          <i
-            className="fa-solid fa-angle-right"
-            style={{
-              color: style?.fontColor,
-            }}></i>
+          <div className={`${styles.icon}`}>
+            <IconRight color={style ? style.fontColor : "white"}></IconRight>
+          </div>
           <ClickEffect></ClickEffect>
         </button>
       </div>
       <div className={`${styles.dayNames} ${areMonthsOpen || areYearsOpen ? styles.close : ""}`}>
         {dayNames.map((value) => {
           return (
-            <div
-              key={value}
-              className={`${styles.dayName}`}
-              style={{
-                color: style?.fontColor,
-              }}>
+            <div key={value} className={`${styles.dayName}`}>
               {value}
             </div>
           );
         })}
       </div>
       <div className={`${styles.content}`}>
-        <div
-          className={`${styles.years} ${areYearsOpen ? styles.open : ""}`}
-          style={{
-            backgroundColor: style?.backgrondColor,
-          }}>
+        <div className={`${styles.years} ${areYearsOpen ? styles.open : ""}`}>
           {years.map((value, index) => {
             return (
               <div
@@ -241,9 +284,6 @@ const DataPicker = ({ onSave, style }: componentProps) => {
 
                     return copiedCurrentValue;
                   });
-                }}
-                style={{
-                  color: style?.fontColor,
                 }}>
                 {value}
                 <ClickEffect></ClickEffect>
@@ -251,11 +291,7 @@ const DataPicker = ({ onSave, style }: componentProps) => {
             );
           })}
         </div>
-        <div
-          className={`${styles.months} ${areMonthsOpen ? styles.open : ""}`}
-          style={{
-            backgroundColor: style?.backgrondColor,
-          }}>
+        <div className={`${styles.months} ${areMonthsOpen ? styles.open : ""}`}>
           {months.map((value, index) => {
             return (
               <div
@@ -285,9 +321,6 @@ const DataPicker = ({ onSave, style }: componentProps) => {
 
                     return copiedCurrentValue;
                   });
-                }}
-                style={{
-                  color: style?.fontColor,
                 }}>
                 {value}
                 <ClickEffect></ClickEffect>
@@ -325,9 +358,6 @@ const DataPicker = ({ onSave, style }: componentProps) => {
                       return copiedCurrentValue;
                     });
                   }
-                }}
-                style={{
-                  color: style?.fontColor,
                 }}>
                 {value}
                 {value !== "" && <ClickEffect></ClickEffect>}
@@ -335,6 +365,92 @@ const DataPicker = ({ onSave, style }: componentProps) => {
             );
           })}
         </div>
+        <div className={`${styles.timer} ${isTimerOpen ? styles.open : ""}`}>
+          <div className={`${styles.wrapper}`} tabIndex={1}>
+            <div className={`${styles.transparentBackground} ${styles.up}`}></div>
+            <div
+              className={`${styles.hours}`}
+              ref={hoursElementRef}
+              onScroll={(event) => {
+                const selectedHour = Math.floor((event.currentTarget.scrollTop / (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight)) * 24);
+
+                minutesTimeoutRef.current !== null && clearTimeout(minutesTimeoutRef.current);
+                hoursTimeoutRef.current !== null && clearTimeout(hoursTimeoutRef.current);
+
+                hoursTimeoutRef.current = setTimeout(() => {
+                  setCurrentDate((currentValue) => {
+                    const copiedCurrentValue = structuredClone(currentValue);
+
+                    copiedCurrentValue.setHours(selectedHour);
+
+                    return copiedCurrentValue;
+                  });
+                }, 100);
+              }}>
+              {(() => {
+                const hours = [];
+
+                for (let i = 0; i < 24; i++) {
+                  hours.push(i.toLocaleString("pl-PL", { minimumIntegerDigits: 2, useGrouping: false }));
+                }
+
+                return hours.map((value) => {
+                  return <p key={value}>{value}</p>;
+                });
+              })()}
+            </div>
+            <div className={`${styles.transparentBackground} ${styles.down}`}></div>
+          </div>
+          <p className={`${styles.colon}`}>:</p>
+          <div className={`${styles.wrapper}`} tabIndex={1}>
+            <div className={`${styles.transparentBackground} ${styles.up}`}></div>
+            <div
+              className={`${styles.minutes}`}
+              ref={minutesElementRef}
+              onScroll={(event) => {
+                const selectedMinute = Math.floor((event.currentTarget.scrollTop / (event.currentTarget.scrollHeight - event.currentTarget.offsetHeight)) * 60);
+
+                minutesTimeoutRef.current !== null && clearTimeout(minutesTimeoutRef.current);
+                hoursTimeoutRef.current !== null && clearTimeout(hoursTimeoutRef.current);
+
+                minutesTimeoutRef.current = setTimeout(() => {
+                  setCurrentDate((currentValue) => {
+                    const copiedCurrentValue = structuredClone(currentValue);
+
+                    copiedCurrentValue.setMinutes(selectedMinute);
+
+                    return copiedCurrentValue;
+                  });
+                }, 100);
+              }}>
+              {(() => {
+                const minutes = [];
+
+                for (let i = 0; i < 60; i++) {
+                  minutes.push(i.toLocaleString("pl-PL", { minimumIntegerDigits: 2, useGrouping: false }));
+                }
+
+                return minutes.map((value) => {
+                  return <p key={value}>{value}</p>;
+                });
+              })()}
+            </div>
+            <div className={`${styles.transparentBackground} ${styles.down}`}></div>
+          </div>
+        </div>
+        {type === "date-time" && (
+          <button
+            className={`${styles.time}`}
+            onClick={() => {
+              setIsTimerOpen((currentValue) => (currentValue === false ? true : false));
+            }}>
+            {isTimerOpen ? (
+              <IconCalendar color={style ? style.fontColor : "white"}></IconCalendar>
+            ) : (
+              <IconClock color={style ? style.fontColor : "white"}></IconClock>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

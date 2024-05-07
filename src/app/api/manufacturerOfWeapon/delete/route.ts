@@ -8,8 +8,6 @@ const POST = async (request: NextRequest) => {
 
     const id = formData.get("id") as string;
 
-    console.log(id);
-
     const response = await prisma.manufacturerOfWeapon.delete({
       where: {
         id: id,

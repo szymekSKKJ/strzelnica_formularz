@@ -1,21 +1,90 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 import ComponentsTransition, { TransitionButton } from "react-components-transition/ComponentsTransition";
 import ChooseWeapon from "./ChooseWeapon/ChooseWeapon";
-import ChooseTrack from "./ChooseTrack/ChooseTrack";
 import ProvideUserData from "./ProvideUserData/ProvideUserData";
 import Button from "../UI/Button/Button";
 import "./animationsForComponentsTranstion.scss";
 import ChoosDate from "./ChoosDate/ChoosDate";
 import { Roboto } from "next/font/google";
-import { weaponAdd } from "@/app/api/weapon/add/route";
-import { revalidateData } from "@/app/api/revalidate/route";
+import { signal } from "@preact/signals";
+import { useSignals } from "@preact/signals-react/runtime";
+import { $Enums } from "@prisma/client";
+import Summary from "./Summary/Summary";
+import Finalized from "./Finalized/Finalized";
+import { reservationAdd } from "@/app/api/reservation/add/route";
 
 const roboto = Roboto({ subsets: ["latin"], weight: ["100", "300", "400", "500", "700", "900"] });
 
+export const userSelectedDataSignal = signal<{
+  weapons: {
+    id: string;
+    caliber: string;
+    type: $Enums.WeaponType;
+    model: string;
+    rentalCost: number;
+    manufacturer: {
+      id: string;
+      name: string;
+    };
+  }[];
+  date: {
+    start: Date;
+    end: Date;
+  } | null;
+  userData: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: string;
+  } | null;
+}>({
+  weapons: [],
+  date: null,
+  userData: null,
+});
+
+export const addWeaponsToUserSelectedData = (
+  weapons: {
+    id: string;
+    caliber: string;
+    type: $Enums.WeaponType;
+    model: string;
+    rentalCost: number;
+    manufacturer: {
+      id: string;
+      name: string;
+    };
+  }[]
+) => {
+  const copiedValue = { ...userSelectedDataSignal.value };
+
+  copiedValue.weapons = weapons;
+
+  userSelectedDataSignal.value = copiedValue;
+};
+
+export const addDateToUserSelectedData = (date: { start: Date; end: Date }) => {
+  const copiedValue = { ...userSelectedDataSignal.value };
+
+  copiedValue.date = date;
+
+  userSelectedDataSignal.value = copiedValue;
+};
+
+export const addUserDataToUserSelectedData = (userData: { firstName: string; lastName: string; email: string; phoneNumber: string } | null) => {
+  const copiedValue = { ...userSelectedDataSignal.value };
+
+  copiedValue.userData = userData;
+
+  userSelectedDataSignal.value = copiedValue;
+};
+
 const ReservationVisitForm = () => {
+  useSignals();
+
   const [stages, setStages] = useState([
     {
       id: 1,
@@ -24,46 +93,83 @@ const ReservationVisitForm = () => {
       isDone: false,
       faIconClassName: "fa-solid fa-gun",
       componentKey: "ChooseWeapon",
+      isFilled: false,
     },
     {
       id: 2,
       order: 2,
-      title: "Wybierz tor",
-      isDone: false,
-      faIconClassName: "fa-solid fa-road",
-      componentKey: "ChooseTrack",
-    },
-    {
-      id: 3,
-      order: 3,
       title: "Wybierz termin",
       isDone: false,
       faIconClassName: "fa-solid fa-calendar-days",
       componentKey: "ChooseDate",
+      isFilled: false,
     },
     {
-      id: 4,
-      order: 4,
+      id: 3,
+      order: 3,
       title: "Podaj dane",
       isDone: false,
       faIconClassName: "fa-solid fa-pen",
       componentKey: "ProvideUserData",
+      isFilled: false,
+    },
+    {
+      id: 4,
+      order: 4,
+      title: "Podsumowanie",
+      isDone: false,
+      faIconClassName: "fa-solid fa-ballot-check",
+      componentKey: "Summary",
+      isFilled: true,
     },
     {
       id: 5,
       order: 5,
-      title: "Podsumowanie",
+      title: "Gotowe",
       isDone: false,
-      faIconClassName: "fa-solid fa-ballot-check",
-      componentKey: "ChooseWeapon",
+      faIconClassName: "fa-solid fa-check",
+      componentKey: "Finalized",
+      isFilled: true,
     },
   ]);
   const [currentStageId, setCurrentStageId] = useState(1);
 
   const [componentsTransitionContext, setComponentsTransitionContext] = useState();
 
-  const nextStage = stages[stages.findIndex((data) => data.id === currentStageId) + 1];
-  const previousStage = stages[stages.findIndex((data) => data.id === currentStageId) - 1];
+  const currentStageIndex = stages.findIndex((data) => data.id === currentStageId);
+
+  const nextStage = currentStageIndex !== -1 ? stages[currentStageIndex + 1] : null;
+  const previousStage = currentStageIndex !== -1 ? stages[currentStageIndex - 1] : null;
+
+  const areAllStagesDone = stages.every((data) => data.isDone === true);
+
+  useEffect(() => {
+    const { weapons, date, userData } = userSelectedDataSignal.value;
+
+    setStages((currentValue) => {
+      const copiedCurrentValue = [...currentValue];
+
+      if (weapons.length !== 0) {
+        copiedCurrentValue.find((data) => data.id === 1)!.isFilled = true;
+      } else {
+        copiedCurrentValue.find((data) => data.id === 1)!.isFilled = false;
+      }
+
+      if (date !== null) {
+        copiedCurrentValue.find((data) => data.id === 2)!.isFilled = true;
+      } else {
+        copiedCurrentValue.find((data) => data.id === 2)!.isFilled = false;
+      }
+
+      if (userData !== null) {
+        copiedCurrentValue.find((data) => data.id === 3)!.isFilled = true;
+      } else {
+        copiedCurrentValue.find((data) => data.id === 3)!.isFilled = false;
+      }
+
+      return copiedCurrentValue;
+    });
+  }, [userSelectedDataSignal.value]);
 
   return (
     <div className={`${styles.reservationVisitForm}`}>
@@ -73,7 +179,7 @@ const ReservationVisitForm = () => {
 
           const lastNotDoneIndex = array.findIndex((data) => data.isDone === false);
 
-          if (isDone || lastNotDoneIndex === index) {
+          if ((isDone || lastNotDoneIndex === index) && areAllStagesDone === false) {
             return (
               <TransitionButton
                 show={componentKey}
@@ -93,9 +199,8 @@ const ReservationVisitForm = () => {
                 onClick={() => {
                   setCurrentStageId(id);
                 }}>
-                <p>
-                  {title} <i className={`${faIconClassName}`}></i>
-                </p>
+                <p>{title}</p>
+                <i className={`${faIconClassName}`}></i>
                 {isDone && (
                   <span>
                     <i className="fa-solid fa-check"></i>
@@ -105,10 +210,13 @@ const ReservationVisitForm = () => {
             );
           } else {
             return (
-              <button key={id} className={`${styles.stage} ${id === currentStageId ? styles.current : ""} ${roboto.className}`}>
-                <p>
-                  {title} <i className={`${faIconClassName}`}></i>
-                </p>
+              <button
+                key={id}
+                className={`${styles.stage} ${id === currentStageId ? styles.current : ""} ${roboto.className} ${
+                  isDone || lastNotDoneIndex === index ? styles.done : ""
+                }`}>
+                <p>{title}</p>
+                <i className={`${faIconClassName}`}></i>
                 {isDone && (
                   <span>
                     <i className="fa-solid fa-check"></i>
@@ -120,7 +228,7 @@ const ReservationVisitForm = () => {
         })}
       </div>
       <div className={`${styles.contentWrapper}`}>
-        {previousStage && (
+        {previousStage && areAllStagesDone === false && (
           <Button
             animationIn={{
               className: "animationIn",
@@ -142,18 +250,14 @@ const ReservationVisitForm = () => {
         <div className={`${styles.content}`}>
           <ComponentsTransition firstVisible={"ChooseWeapon"} getContext={setComponentsTransitionContext}>
             <ChooseWeapon key="ChooseWeapon"></ChooseWeapon>
-            <ChooseTrack
-              key="ChooseTrack"
-              weapon={{
-                name: "Glock 19",
-                caliber: "19mm",
-                type: "pistol",
-              }}></ChooseTrack>
             <ProvideUserData key="ProvideUserData"></ProvideUserData>
             <ChoosDate key="ChooseDate"></ChoosDate>
+            <Summary key="Summary"></Summary>
+            <Finalized key="Finalized"></Finalized>
           </ComponentsTransition>
         </div>
         <Button
+          disabled={stages[currentStageIndex].isFilled === false ? true : false}
           id="setNextStageButton"
           animationIn={{
             className: "animationIn",
@@ -165,19 +269,43 @@ const ReservationVisitForm = () => {
           }}
           context={componentsTransitionContext}
           style={{ fontSize: "22px" }}
-          show={nextStage ? nextStage.componentKey : undefined}
-          onClick={() => {
+          show={nextStage ? nextStage.componentKey : stages[currentStageIndex]!.componentKey}
+          onClick={async () => {
             setStages((currentValue) => {
               const copiedCurrentValue = structuredClone(currentValue);
 
-              copiedCurrentValue.find((data) => currentStageId === data.id)!.isDone = true;
+              const foundData = copiedCurrentValue.find((data) => currentStageId === data.id);
+
+              if (foundData) {
+                foundData.isDone = true;
+
+                if (foundData.componentKey === "Summary") {
+                  copiedCurrentValue.find((data) => data.componentKey === "Finalized")!.isDone = true;
+                }
+              }
 
               return copiedCurrentValue;
             });
 
-            setCurrentStageId((currentValue) => currentValue + 1);
+            setCurrentStageId((currentValue) => (currentValue < stages.length ? currentValue + 1 : currentValue));
+
+            if (stages[currentStageIndex]!.componentKey === "Summary") {
+              const { weapons, date, userData } = userSelectedDataSignal.value;
+
+              const weaponsId = weapons.map((data) => data.id);
+
+              const response = await reservationAdd(
+                date!.start,
+                date!.end,
+                weaponsId,
+                userData!.email,
+                userData!.firstName,
+                userData!.lastName,
+                parseInt(userData!.phoneNumber)
+              );
+            }
           }}>
-          Dalej
+          {areAllStagesDone === true ? "Gotowe!" : stages[currentStageIndex]!.componentKey === "Summary" ? "Wyślij rezerwację" : "Dalej"}
         </Button>
       </div>
     </div>

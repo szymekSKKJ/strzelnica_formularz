@@ -1,12 +1,17 @@
 .reservationVisitForm {
-  width: 1200px;
-  height: 800px;
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  transform: translate(-50%, 0%);
+  width: 80dvw;
+  height: 90dvh;
   display: flex;
   gap: 25px;
+  margin: 50px auto 0px auto;
+
+  @media screen and (width <= 1024px) {
+    flex-direction: column;
+    width: calc(100dvw - 30px);
+    height: calc(100dvh - 30px);
+    margin: 15px auto 0px auto;
+    gap: 15px;
+  }
 
   .stages {
     width: 225px;
@@ -16,6 +21,12 @@
     border-radius: 4px;
     flex-direction: column;
     flex-shrink: 0;
+    transition: 250ms;
+
+    @media screen and (width <= 1024px) {
+      width: 100%;
+      flex-direction: row;
+    }
 
     button.stage {
       width: 100%;
@@ -26,19 +37,34 @@
       position: relative;
       cursor: not-allowed;
       border: none;
-      background-color: white;
+      background-color: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
       p {
+        width: fit-content;
         font-size: 17px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
         font-weight: 500;
         transition: 250ms;
         opacity: 0.33;
+        white-space: nowrap;
 
-        i {
-          font-size: 20px;
+        @media screen and (width <= 1024px) {
+          display: none;
+        }
+      }
+
+      > i {
+        font-size: 20px;
+        margin-left: auto;
+        opacity: 0.33;
+        transition: 250ms;
+
+        @media screen and (width <= 1024px) {
+          margin-right: auto;
         }
       }
     }
@@ -46,6 +72,10 @@
     .stage.current {
       p {
         opacity: 1 !important;
+      }
+
+      > i {
+        opacity: 1;
       }
     }
 
@@ -56,9 +86,17 @@
         p {
           opacity: 1;
         }
+
+        > i {
+          opacity: 1;
+        }
       }
 
       p {
+        opacity: 0.33;
+      }
+
+      > i {
         opacity: 0.33;
       }
 
@@ -104,6 +142,10 @@
     border-radius: 4px;
     flex-direction: column;
     padding: 25px;
+
+    @media screen and (width <= 425px) {
+      padding: 15px;
+    }
 
     .content {
       width: 100%;

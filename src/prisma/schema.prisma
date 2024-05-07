@@ -18,6 +18,7 @@ model Weapon {
     quantity                 Int
     rentalCost               Decimal
     ammunition               Ammunition[]
+    reservation              Reservation[]
 
     @@unique([manufacturerOfWeaponName, model])
     @@index([manufacturerOfWeaponName, model])
@@ -58,4 +59,28 @@ model ManufacturerOfAmmunition {
     id         String       @id @default(uuid())
     name       String       @unique
     ammunition Ammunition[]
+}
+
+model AvailableReservationHour {
+    id    String @id @default(uuid())
+    start String
+    end   String
+}
+
+model Reservation {
+    id             String   @id @default(uuid())
+    bookedForStart DateTime
+    bookedForEnd   DateTime
+    weapons        Weapon[]
+    track          Track    @relation(fields: [trackId], references: [id])
+    trackId        String
+    email          String
+    firstName      String
+    lastName       String
+    phoneNumber    Int
+}
+
+model Track {
+    id           String        @id @default(uuid())
+    reservations Reservation[]
 }

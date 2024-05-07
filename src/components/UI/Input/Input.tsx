@@ -1,13 +1,15 @@
+import { FormEvent, HtmlHTMLAttributes } from "react";
 import styles from "./styles.module.scss";
 
-interface componentProps {
+interface componentProps extends HtmlHTMLAttributes<HTMLInputElement> {
   placeholder: string;
+  value?: string;
 }
 
-const Input = ({ placeholder }: componentProps) => {
+const Input = ({ placeholder, value, ...rest }: componentProps) => {
   return (
     <div className={`${styles.inputWrapper}`}>
-      <input placeholder={placeholder}></input>
+      <input {...rest} placeholder={placeholder} defaultValue={value ? value : ""}></input>
       <label>{placeholder}</label>
     </div>
   );

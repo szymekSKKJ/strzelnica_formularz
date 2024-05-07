@@ -21,25 +21,36 @@ interface componentProps extends HtmlHTMLAttributes<HTMLButtonElement> {
   context?: any;
   onClick?: any;
   show?: string;
+  disabled?: boolean;
 }
 
-const Button = ({ children, show, context, animationIn, animationOut, className, ...rest }: componentProps) => {
-  if (show) {
+const Button = ({ children, show, context, animationIn, animationOut, className, disabled = false, onClick, ...rest }: componentProps) => {
+  if (show && disabled === false) {
     return (
       <TransitionButton
+        {...rest}
         animationOut={animationOut}
         animationIn={animationIn}
         context={context}
         show={show}
         className={`${styles.button} ${varela_Round.className} ${className}`}
-        {...rest}>
+        onClick={(event) => {
+          onClick(event);
+        }}>
         {children}
         <ClickEffect></ClickEffect>
       </TransitionButton>
     );
   } else {
     return (
-      <button className={`${styles.button} ${varela_Round.className} ${className}`} {...rest}>
+      <button
+        {...rest}
+        className={`${styles.button} ${varela_Round.className} ${disabled === true ? styles.disabled : ""} ${className}`}
+        onClick={(event) => {
+          if (disabled === false) {
+            onClick && onClick(event);
+          }
+        }}>
         {children}
         <ClickEffect></ClickEffect>
       </button>

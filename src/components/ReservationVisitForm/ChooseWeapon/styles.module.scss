@@ -6,11 +6,16 @@
   position: absolute;
   top: 0px;
   left: 0px;
+  opacity: 0;
 
   h2 {
     font-size: 42px;
     margin-bottom: 25px;
     color: #00a1e6;
+
+    @media screen and (width <= 425px) {
+      font-size: 36px;
+    }
   }
 
   .tiles {
@@ -20,6 +25,10 @@
     align-items: center;
     gap: 25px;
     margin: auto;
+
+    @media screen and (width <= 425px) {
+      gap: 16px;
+    }
 
     .tile {
       width: 125px;
@@ -35,6 +44,10 @@
       padding-bottom: 8px;
       opacity: 0.5;
       transition: 250ms;
+
+      @media screen and (width <= 425px) {
+        width: 120px;
+      }
 
       &:hover {
         opacity: 1;
@@ -108,6 +121,8 @@
             padding: 4px 8px 4px 8px;
             border-radius: 4px;
             font-size: 22px;
+            text-align: left;
+            white-space: nowrap;
           }
         }
       }

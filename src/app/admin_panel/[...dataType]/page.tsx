@@ -1,10 +1,14 @@
 import { ammunitionGetSome } from "@/app/api/ammunition/get/some/route";
+import { availableReservationHourGetSome } from "@/app/api/availableReservationHour/get/some/route";
 import { manufacturerOfAmmunitionGetSome } from "@/app/api/manufacturerOfAmmunition/get/some/route";
 import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
+import { reservationGetSome } from "@/app/api/reservation/get/some/route";
 import { weaponGetSome } from "@/app/api/weapon/get/some/route";
 import AmmunitionEditor from "@/components/AdminPanel/AmmunitionEditor/AmmunitionEditor";
+import AvailableHoursEditor from "@/components/AdminPanel/AvailableHoursEditor/AvailableHoursEditor";
 import ManufacturerOfAmmunitionEditor from "@/components/AdminPanel/ManufacturerOfAmmunitionEditor/ManufacturerOfAmmunitionEditor";
 import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
+import ReservationEditor from "@/components/AdminPanel/ReservationEditor/ReservationEditor";
 import WeaponEditor from "@/components/AdminPanel/WeaponEditor/WeaponEditor";
 
 interface componentProps {
@@ -43,6 +47,22 @@ const availableRoutes = [
       return await ammunitionGetSome();
     },
     editor: AmmunitionEditor,
+  },
+  {
+    route: "dostepne_godziny",
+    title: "Dostępne godziny",
+    getDataCallback: async () => {
+      return await availableReservationHourGetSome();
+    },
+    editor: AvailableHoursEditor,
+  },
+  {
+    route: "rezerwacje",
+    title: "Rezerwacje",
+    getDataCallback: async () => {
+      return await reservationGetSome();
+    },
+    editor: ReservationEditor,
   },
 ];
 

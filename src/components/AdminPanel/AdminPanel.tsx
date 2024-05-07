@@ -30,6 +30,18 @@ const AdminPanel = () => {
       title: "Amunicja",
       icon: <Image src={ammunitionIcon} alt="Ikona"></Image>,
     },
+    {
+      id: 5,
+      href: "/admin_panel/dostepne_godziny",
+      title: "Dostępne godziny",
+      icon: <i className="fa-solid fa-clock"></i>,
+    },
+    {
+      id: 5,
+      href: "/admin_panel/rezerwacje",
+      title: "Rezerwacje",
+      icon: <i className="fa-solid fa-users"></i>,
+    },
   ];
 
   return (

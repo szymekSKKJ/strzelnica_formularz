@@ -1,59 +1,143 @@
 .choosDate {
   width: 100%;
-  height: auto;
+  height: 100%;
   position: absolute;
   top: 0px;
   left: 0px;
   opacity: 0; // From animation
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+
+  &:has(:not(.additionalInformation)) {
+    p.hint {
+      margin-bottom: 25px;
+    }
+  }
 
   h2 {
     font-size: 42px;
-    margin-bottom: 25px;
+    height: auto;
     color: #00a1e6;
+
+    @media screen and (width <= 425px) {
+      font-size: 36px;
+    }
+  }
+
+  .additionalInformation {
+    margin-top: 2px;
+    margin-bottom: 25px;
+
+    > div {
+      > p {
+        span {
+          font-weight: 500;
+        }
+      }
+
+      .notAvailableWeapons,
+      .notTrackAvailable {
+        margin-left: 10px;
+        margin-bottom: 10px;
+      }
+    }
   }
 
   .content {
     width: 100%;
+    min-height: 447px;
+    height: auto;
     display: flex;
-    gap: 50px;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 25px;
+    position: relative;
+
+    @media screen and (width <= 1024px) {
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    &::after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      background-color: rgba(0, 0, 0, 0.33);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: 250ms;
+      pointer-events: none;
+    }
 
     .dataPickerWrapper {
-      width: 50%;
+      width: auto;
+      max-width: 437px;
+      height: auto;
       flex-shrink: 0;
+      position: sticky;
+      top: 0px;
+      padding: 0px 2px 0px 2px;
+      flex-grow: 5;
+
+      @media screen and (width <= 1024px) {
+        width: 100%;
+        position: unset;
+        top: unset;
+      }
+
+      @media screen and (width <= 768px) {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      @media screen and (width <= 425px) {
+        width: 100%;
+        max-width: unset;
+      }
     }
 
     .availableHours {
+      max-width: 250px;
       width: auto;
       height: auto;
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      justify-content: space-between;
       align-items: flex-start;
-      align-content: flex-start;
-      flex-grow: 1;
-      gap: 8px;
+      gap: 25px;
+      flex-grow: 0.1;
+
+      @media screen and (width <= 1024px) {
+        width: 100%;
+      }
+
+      @media screen and (width <= 425px) {
+        max-width: unset;
+        flex-grow: unset;
+      }
 
       .availableHour {
-        width: fit-content;
+        width: 100%;
         height: auto;
         border-radius: 4px;
         border: solid 1px #00a1e6;
         padding: 4px 16px 4px 16px;
         cursor: pointer;
         transition: 250ms;
-        flex-grow: 1;
+        white-space: nowrap;
 
         &:hover {
           background-color: rgba(0, 161, 230, 0.2);
         }
 
-        &:last-child {
-          flex-grow: 0;
-          width: calc(50% - 4px);
-        }
-
         p {
           color: #00a1e6;
-          font-size: 18px;
+          font-size: 20px;
           text-align: center;
           font-weight: 400;
         }
@@ -70,6 +154,13 @@
           color: white;
         }
       }
+    }
+  }
+
+  .content.loading {
+    &::after {
+      opacity: 1;
+      pointer-events: all;
     }
   }
 }
