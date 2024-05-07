@@ -8,8 +8,7 @@ const POST = async (request: NextRequest) => {
 
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
-    // const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
-    const weaponsId = ["fd9910e3-2f67-42b8-bae1-ee1afe5eda3b"];
+    const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
 
     bookedForStart.setMilliseconds(0);
     bookedForStart.setSeconds(0);
@@ -116,11 +115,13 @@ const reservationGetCheckIfAvailable = async (
   formData.set(`bookedForEnd`, `${bookedForEnd}`);
   formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
 
-  return await fetch(new Request(`${process.env.NEXT_PUBLIC_URL}/api/reservation/get/checkIfAvailable`), {
-    method: "POST",
-    body: formData,
-    cache: "no-store",
-  }).then(async (response) => await response.json());
+  return await fetch(
+    new Request(`${process.env.NEXT_PUBLIC_URL}/api/reservation/get/checkIfAvailable`, {
+      method: "POST",
+      body: formData,
+      cache: "no-store",
+    })
+  ).then(async (response) => await response.json());
 };
 
 export { reservationGetCheckIfAvailable };
