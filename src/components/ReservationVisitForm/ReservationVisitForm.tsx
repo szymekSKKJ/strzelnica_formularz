@@ -294,6 +294,8 @@ const ReservationVisitForm = () => {
 
               const weaponsId = weapons.map((data) => data.id);
 
+              console.log(weaponsId);
+
               const response = await reservationAdd(
                 date!.start,
                 date!.end,
