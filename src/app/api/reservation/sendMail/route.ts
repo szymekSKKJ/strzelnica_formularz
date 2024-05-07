@@ -15,13 +15,14 @@ const reservationSendMail = async (emailTo: string, htmlContent: string) => {
   });
 
   const message = {
-    from: process.env.NODEMAILER_EMAIL,
     to: emailTo,
     subject: "Potwierdzenie rezerwacji - strzelnica Precision",
     html: htmlContent,
   };
 
   const response = await transporter.sendMail(message);
+
+  console.log(response);
 };
 
 export default reservationSendMail;
