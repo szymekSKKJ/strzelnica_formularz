@@ -11,7 +11,8 @@ const POST = async (request: NextRequest) => {
     const formData = await request.formData();
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
-    const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
+    // const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
+    const weaponsId = ["fd9910e3-2f67-42b8-bae1-ee1afe5eda3b"];
     const email = formData.get(`email`) as string;
     const firstName = formData.get(`firstName`) as string;
     const lastName = formData.get(`lastName`) as string;
