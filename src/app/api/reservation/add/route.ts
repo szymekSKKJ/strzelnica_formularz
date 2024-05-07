@@ -23,7 +23,9 @@ const POST = async (request: NextRequest) => {
     bookedForEnd.setMilliseconds(0);
     bookedForEnd.setSeconds(0);
 
-    const response = await reservationGetCheckIfAvailable(bookedForStart, bookedForEnd, weaponsId);
+    //const response = await reservationGetCheckIfAvailable(bookedForStart, bookedForEnd, weaponsId);
+
+    const response = { error: null, data: { availableTrack: { id: "1111" }, notAvailableWeapons: ["qqqq"] } };
 
     if (response.error === null && response.data!.availableTrack !== null && response.data!.notAvailableWeapons.length === 0) {
       const prismaResponse = await prisma.reservation.create({
@@ -92,7 +94,7 @@ const POST = async (request: NextRequest) => {
       </html>
       `;
 
-      //await reservationSendMail(email, htmlContent);
+      await reservationSendMail(email, htmlContent);
 
       return createResponse(null, null);
     } else {
