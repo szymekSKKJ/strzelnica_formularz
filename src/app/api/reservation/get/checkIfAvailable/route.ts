@@ -3,8 +3,9 @@ import prisma from "@/prisma/prisma";
 import { NextRequest } from "next/server";
 
 const POST = async (request: NextRequest) => {
+  const formData = await request.formData();
+
   try {
-    const formData = await request.formData();
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
     const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
