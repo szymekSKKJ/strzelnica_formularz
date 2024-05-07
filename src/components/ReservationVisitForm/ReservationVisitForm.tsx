@@ -294,8 +294,6 @@ const ReservationVisitForm = () => {
 
               const weaponsId = weapons.map((data) => data.id);
 
-              console.log(weaponsId);
-
               const response = await reservationAdd(
                 date!.start,
                 date!.end,
@@ -305,8 +303,6 @@ const ReservationVisitForm = () => {
                 userData!.lastName,
                 parseInt(userData!.phoneNumber)
               );
-
-              console.log(response);
             }
           }}>
           {areAllStagesDone === true ? "Gotowe!" : stages[currentStageIndex]!.componentKey === "Summary" ? "Wyślij rezerwację" : "Dalej"}
