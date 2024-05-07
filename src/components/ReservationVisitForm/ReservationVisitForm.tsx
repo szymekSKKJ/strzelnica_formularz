@@ -303,8 +303,6 @@ const ReservationVisitForm = () => {
                 userData!.lastName,
                 parseInt(userData!.phoneNumber)
               );
-
-              console.log(response);
             }
           }}>
           {areAllStagesDone === true ? "Gotowe!" : stages[currentStageIndex]!.componentKey === "Summary" ? "Wyślij rezerwację" : "Dalej"}

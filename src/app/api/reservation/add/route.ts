@@ -118,7 +118,7 @@ const reservationAdd = async (
 
   formData.set(`bookedForStart`, `${bookedForStart}`);
   formData.set(`bookedForEnd`, `${bookedForEnd}`);
-  formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
+  formData.set(`weaponsId`, JSON.stringify(weaponsId));
   formData.set(`email`, `${email}`);
   formData.set(`firstName`, `${firstName}`);
   formData.set(`lastName`, `${lastName}`);
