@@ -2,7 +2,7 @@ import createResponse, { Response } from "@/app/api/createResponse";
 import prisma from "@/prisma/prisma";
 import { NextRequest } from "next/server";
 
-const PUT = async (request: NextRequest) => {
+const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
@@ -88,7 +88,7 @@ const PUT = async (request: NextRequest) => {
   }
 };
 
-export { PUT };
+export { POST };
 
 const reservationGetCheckIfAvailable = async (
   bookedForStart: Date,
@@ -116,7 +116,7 @@ const reservationGetCheckIfAvailable = async (
   formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
 
   return await fetch(request, {
-    method: "PUT",
+    method: "POST",
     body: formData,
     cache: "no-store",
   }).then(async (response) => await response.json());
