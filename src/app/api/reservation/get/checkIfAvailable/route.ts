@@ -7,8 +7,7 @@ const POST = async (request: NextRequest) => {
     const formData = await request.formData();
     const bookedForStart = new Date(formData.get(`bookedForStart`) as string);
     const bookedForEnd = new Date(formData.get(`bookedForEnd`) as string) as Date;
-    //const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
-    const weaponsId = ["sss"];
+    const weaponsId = JSON.parse(formData.get(`weaponsId`) as string) as string[];
 
     bookedForStart.setMilliseconds(0);
     bookedForStart.setSeconds(0);
@@ -114,7 +113,7 @@ const reservationGetCheckIfAvailable = async (
 
   formData.set(`bookedForStart`, `${bookedForStart}`);
   formData.set(`bookedForEnd`, `${bookedForEnd}`);
-  // formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
+  formData.set(`weaponsId`, `${JSON.stringify(weaponsId)}`);
 
   return await fetch(request, {
     method: "POST",
