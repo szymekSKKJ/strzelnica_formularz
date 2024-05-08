@@ -26,7 +26,7 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
 
       return {
         ...data,
-        isSelected: false,
+
         bookedForStart: new Date(bookedForStart),
         bookedForEnd: new Date(bookedForEnd),
       };
@@ -36,10 +36,10 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
   const router = useRouter();
 
   const headers = [
-    {
-      key: "isSelected",
-      displayName: "",
-    },
+    // {
+    //   key: "isSelected",
+    //   displayName: "",
+    // },
     {
       key: "id",
       displayName: "id",
@@ -116,7 +116,7 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
               <Row key={id}>
                 {Object.values(data).map((value, index) => {
                   return (
-                    <Cell key={columnKeys[index]} type={columnKeys[index] === "id" ? "text" : "date"} isEditable={false}>
+                    <Cell key={columnKeys[index]} type={"text"} isEditable={false}>
                       {value}
                     </Cell>
                   );
