@@ -41,101 +41,119 @@ const ChoosDate = () => {
     userSelectedDataSignal.value.date === null ? null : userSelectedDataSignal.value.date
   );
   const [isLoading, setIsLoading] = useState(true);
+  const [dateBeforeSetting, setDateBeforeSetting] = useState<{ pickedDate: { start: Date; end: Date } }>({
+    pickedDate: {
+      start: new Date(),
+      end: new Date(),
+    },
+  });
 
   useEffect(() => {
     addDateToUserSelectedData(pickedDate);
   }, [pickedDate]);
 
   useEffect(() => {
-    setIsLoading(true);
-
     const timeout = setTimeout(async () => {
-      const response1 = await availableReservationHourGetSome();
+      setIsLoading(true);
 
-      if (response1.error === null) {
-        const modifedResponse1 = response1.data!.map((data) => {
-          // Start and end are in HH:MM format
-          const { start, end, id } = data;
+      const { pickedDate } = dateBeforeSetting;
 
-          const startDate = pickedDate?.start ? new Date(pickedDate?.start) : new Date();
-          const endDate = pickedDate?.end ? new Date(pickedDate?.end) : new Date();
+      if (pickedDate) {
+        const response1 = await availableReservationHourGetSome();
 
-          startDate.setHours(parseInt(start.split(":")[0]));
-          startDate.setMinutes(parseInt(start.split(":")[1]));
-          startDate.setSeconds(0);
-          startDate.setMilliseconds(0);
+        if (response1.error === null) {
+          const modifedResponse1 = response1.data!.map((data) => {
+            // Start and end are in HH:MM format
+            const { start, end, id } = data;
 
-          endDate.setHours(parseInt(end.split(":")[0]));
-          endDate.setMinutes(parseInt(end.split(":")[1]));
-          endDate.setSeconds(0);
-          endDate.setMilliseconds(0);
+            const startDate = pickedDate?.start ? new Date(pickedDate?.start) : new Date();
+            const endDate = pickedDate?.end ? new Date(pickedDate?.end) : new Date();
 
-          return {
-            id: id,
-            start: startDate,
-            end: endDate,
-          };
-        });
+            startDate.setHours(parseInt(start.split(":")[0]));
+            startDate.setMinutes(parseInt(start.split(":")[1]));
+            startDate.setSeconds(0);
+            startDate.setMilliseconds(0);
 
-        const weaponsId = userSelectedDataSignal.value.weapons.map((data) => data.id);
+            endDate.setHours(parseInt(end.split(":")[0]));
+            endDate.setMinutes(parseInt(end.split(":")[1]));
+            endDate.setSeconds(0);
+            endDate.setMilliseconds(0);
 
-        const response2 = await Promise.all(
-          modifedResponse1.map(async (data) => {
-            const response = await reservationGetCheckIfAvailable(data.start, data.end, weaponsId);
+            return {
+              id: id,
+              start: startDate,
+              end: endDate,
+            };
+          });
 
-            if (response.error === null) {
-              return {
-                ...response.data,
-                end: data.end,
-                start: data.start,
-              };
-            }
-          })
-        );
+          const weaponsId = userSelectedDataSignal.value.weapons.map((data) => data.id);
 
-        modifedResponse1.sort((a, b) => (a.start.getTime() > b.start.getTime() ? 1 : b.start.getTime() > a.start.getTime() ? -1 : 0));
+          const response2 = await Promise.all(
+            modifedResponse1.map(async (data) => {
+              const response = await reservationGetCheckIfAvailable(data.start, data.end, weaponsId);
 
-        const modifedResponse2 = response2.filter((data) => {
-          const { availableTrack, notAvailableWeapons } = data!;
+              if (response.error === null) {
+                return {
+                  ...response.data,
+                  end: data.end,
+                  start: data.start,
+                };
+              }
+            })
+          );
 
-          if (availableTrack === null || notAvailableWeapons!.length > 0) {
-            return data;
-          }
-        });
+          modifedResponse1.sort((a, b) => (a.start.getTime() > b.start.getTime() ? 1 : b.start.getTime() > a.start.getTime() ? -1 : 0));
 
-        const modifedResponse1_1 = modifedResponse1.filter((data) => {
-          const { start } = data;
+          const modifedResponse2 = response2.filter((data) => {
+            const { availableTrack, notAvailableWeapons } = data!;
 
-          const foundNotAvailableData = modifedResponse2.find((dataLocal) => {
-            const { start: startLocal } = dataLocal!;
-
-            const startLocalDate = new Date(startLocal);
-
-            if (start.getTime() === startLocalDate.getTime()) {
-              return dataLocal;
+            if (availableTrack === null || notAvailableWeapons!.length > 0) {
+              return data;
             }
           });
 
-          if (foundNotAvailableData === undefined) {
-            return data;
+          const modifedResponse1_1 = modifedResponse1.filter((data) => {
+            const { start } = data;
+
+            const foundNotAvailableData = modifedResponse2.find((dataLocal) => {
+              const { start: startLocal } = dataLocal!;
+
+              const startLocalDate = new Date(startLocal);
+
+              if (start.getTime() === startLocalDate.getTime()) {
+                return dataLocal;
+              }
+            });
+
+            if (foundNotAvailableData === undefined) {
+              return data;
+            }
+          });
+
+          setAvailableHours(modifedResponse1_1);
+          setAdditionalInformation(modifedResponse2);
+
+          if (modifedResponse1_1[0] !== undefined) {
+            if (userSelectedDataSignal.value.date === null) {
+              setPickedData(modifedResponse1_1[0]);
+            } else {
+              setPickedData(userSelectedDataSignal.value.date);
+            }
+          } else {
+            setPickedData(null);
           }
-        });
 
-        setAvailableHours(modifedResponse1_1);
-        setAdditionalInformation(modifedResponse2);
-
-        userSelectedDataSignal.value.date === null && setPickedData(modifedResponse1[0]);
-
-        setIsLoading(false);
-      } else {
-        setIsLoading(false);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
       }
     });
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [pickedDate]);
+  }, [dateBeforeSetting]);
 
   return (
     <div className={`${styles.choosDate}`}>
@@ -184,86 +202,95 @@ const ChoosDate = () => {
           })}
         </div>
       )}
-      {availableHours.length !== 0 && pickedDate !== null && (
-        <div className={`${styles.content} ${isLoading ? styles.loading : ""}`}>
-          <div className={`${styles.dataPickerWrapper}`}>
-            <DataPicker
-              initialDate={pickedDate.start}
-              type="only-date"
-              onSave={(value) => {
-                const dateFrom = new Date(value);
-                const dateTo = new Date(value);
+      <div className={`${styles.content} ${isLoading ? styles.loading : ""}`}>
+        <div className={`${styles.dataPickerWrapper}`}>
+          <DataPicker
+            initialDate={pickedDate ? pickedDate.start : dateBeforeSetting.pickedDate.start}
+            type="only-date"
+            onSave={(value) => {
+              const dateFrom = new Date(value);
+              const dateTo = new Date(value);
 
-                dateFrom.setSeconds(0);
-                dateTo.setSeconds(0);
+              dateFrom.setSeconds(0);
+              dateTo.setSeconds(0);
 
-                setPickedData((currentValue) => {
-                  const copiedCurrentValue = structuredClone(currentValue);
+              setDateBeforeSetting({
+                pickedDate: {
+                  end: dateFrom,
+                  start: dateTo,
+                },
+              });
 
-                  dateFrom.setMinutes(copiedCurrentValue!.end.getMinutes());
-                  dateFrom.setHours(copiedCurrentValue!.end.getHours());
+              setPickedData((currentValue) => {
+                const copiedCurrentValue = structuredClone(currentValue);
 
-                  dateTo.setMinutes(copiedCurrentValue!.start.getMinutes());
-                  dateTo.setHours(copiedCurrentValue!.start.getHours());
+                if (copiedCurrentValue) {
+                  dateFrom.setMinutes(copiedCurrentValue.end.getMinutes());
+                  dateFrom.setHours(copiedCurrentValue.end.getHours());
+
+                  dateTo.setMinutes(copiedCurrentValue.start.getMinutes());
+                  dateTo.setHours(copiedCurrentValue.start.getHours());
 
                   return {
                     end: dateFrom,
                     start: dateTo,
                   };
-                });
-              }}
-              style={{
-                backgrondColor: "white",
-                fontColor: "#00a1e6",
-                hoverColor: "rgba(0, 161, 230, 0.15)",
-                borderColor: "#00a1e6",
-                borderRadius: "4px",
-              }}></DataPicker>
-          </div>
-          <div className={`${styles.availableHours}`}>
-            {availableHours.map((data) => {
-              const { end, start } = data;
-
-              const isThisDatePicked =
-                end.getHours() === pickedDate.end.getHours() &&
-                start.getHours() === pickedDate.start.getHours() &&
-                end.getMinutes() === pickedDate.end.getMinutes() &&
-                start.getMinutes() === pickedDate.start.getMinutes();
-
-              return (
-                <div
-                  className={`${styles.availableHour} ${isThisDatePicked ? styles.picked : ""}`}
-                  key={`${end.getTime()}`}
-                  onClick={() => {
-                    setPickedData((currentValue) => {
-                      const copiedCurrentValue = structuredClone(currentValue);
-
-                      copiedCurrentValue!.end.setHours(end.getHours());
-                      copiedCurrentValue!.end.setMinutes(end.getMinutes());
-
-                      copiedCurrentValue!.start.setHours(start.getHours());
-                      copiedCurrentValue!.start.setMinutes(start.getMinutes());
-
-                      return copiedCurrentValue;
-                    });
-                  }}>
-                  <p>
-                    {start.toLocaleTimeString("pl-PL", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}{" "}
-                    -{" "}
-                    {end.toLocaleTimeString("pl-PL", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+                } else {
+                  return null;
+                }
+              });
+            }}
+            style={{
+              backgrondColor: "white",
+              fontColor: "#00a1e6",
+              hoverColor: "rgba(0, 161, 230, 0.15)",
+              borderColor: "#00a1e6",
+              borderRadius: "4px",
+            }}></DataPicker>
         </div>
-      )}
+        <div className={`${styles.availableHours}`}>
+          {availableHours.map((data) => {
+            const { end, start } = data;
+
+            const isThisDatePicked =
+              end.getHours() === pickedDate?.end.getHours() &&
+              start.getHours() === pickedDate.start.getHours() &&
+              end.getMinutes() === pickedDate.end.getMinutes() &&
+              start.getMinutes() === pickedDate.start.getMinutes();
+
+            return (
+              <div
+                className={`${styles.availableHour} ${isThisDatePicked ? styles.picked : ""}`}
+                key={`${end.getTime()}`}
+                onClick={() => {
+                  setPickedData((currentValue) => {
+                    const copiedCurrentValue = structuredClone(currentValue);
+
+                    copiedCurrentValue?.end.setHours(end.getHours());
+                    copiedCurrentValue?.end.setMinutes(end.getMinutes());
+
+                    copiedCurrentValue?.start.setHours(start.getHours());
+                    copiedCurrentValue?.start.setMinutes(start.getMinutes());
+
+                    return copiedCurrentValue;
+                  });
+                }}>
+                <p>
+                  {start.toLocaleTimeString("pl-PL", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
+                  -{" "}
+                  {end.toLocaleTimeString("pl-PL", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

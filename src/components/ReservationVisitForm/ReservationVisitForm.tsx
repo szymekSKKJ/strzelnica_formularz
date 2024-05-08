@@ -258,7 +258,6 @@ const ReservationVisitForm = () => {
         </div>
         <Button
           disabled={stages[currentStageIndex].isFilled === false ? true : false}
-          id="setNextStageButton"
           animationIn={{
             className: "animationIn",
             duration: 500,
@@ -269,40 +268,96 @@ const ReservationVisitForm = () => {
           }}
           context={componentsTransitionContext}
           style={{ fontSize: "22px" }}
-          show={nextStage ? nextStage.componentKey : stages[currentStageIndex]!.componentKey}
+          show={nextStage ? nextStage.componentKey : stages[0]!.componentKey}
           onClick={async () => {
-            setStages((currentValue) => {
-              const copiedCurrentValue = structuredClone(currentValue);
+            if (areAllStagesDone === true) {
+              setStages([
+                {
+                  id: 1,
+                  order: 1,
+                  title: "Wybierz broń",
+                  isDone: false,
+                  faIconClassName: "fa-solid fa-gun",
+                  componentKey: "ChooseWeapon",
+                  isFilled: false,
+                },
+                {
+                  id: 2,
+                  order: 2,
+                  title: "Wybierz termin",
+                  isDone: false,
+                  faIconClassName: "fa-solid fa-calendar-days",
+                  componentKey: "ChooseDate",
+                  isFilled: false,
+                },
+                {
+                  id: 3,
+                  order: 3,
+                  title: "Podaj dane",
+                  isDone: false,
+                  faIconClassName: "fa-solid fa-pen",
+                  componentKey: "ProvideUserData",
+                  isFilled: false,
+                },
+                {
+                  id: 4,
+                  order: 4,
+                  title: "Podsumowanie",
+                  isDone: false,
+                  faIconClassName: "fa-solid fa-ballot-check",
+                  componentKey: "Summary",
+                  isFilled: true,
+                },
+                {
+                  id: 5,
+                  order: 5,
+                  title: "Gotowe",
+                  isDone: false,
+                  faIconClassName: "fa-solid fa-check",
+                  componentKey: "Finalized",
+                  isFilled: true,
+                },
+              ]);
+              setCurrentStageId(1);
+              userSelectedDataSignal.value = {
+                weapons: [],
+                date: null,
+                userData: null,
+              };
+            } else {
+              setStages((currentValue) => {
+                const copiedCurrentValue = structuredClone(currentValue);
 
-              const foundData = copiedCurrentValue.find((data) => currentStageId === data.id);
+                const foundData = copiedCurrentValue.find((data) => currentStageId === data.id);
 
-              if (foundData) {
-                foundData.isDone = true;
+                if (foundData) {
+                  foundData.isDone = true;
 
-                if (foundData.componentKey === "Summary") {
-                  copiedCurrentValue.find((data) => data.componentKey === "Finalized")!.isDone = true;
+                  if (foundData.componentKey === "Summary") {
+                    copiedCurrentValue.find((data) => data.componentKey === "Finalized")!.isDone = true;
+                  }
                 }
+
+                return copiedCurrentValue;
+              });
+
+              setCurrentStageId((currentValue) => (currentValue < stages.length ? currentValue + 1 : currentValue));
+
+              if (stages[currentStageIndex]!.componentKey === "Summary") {
+                const { weapons, date, userData } = userSelectedDataSignal.value;
+
+                const weaponsId = weapons.map((data) => data.id);
+
+                const response = await reservationAdd(
+                  date!.start,
+                  date!.end,
+                  weaponsId,
+                  userData!.email,
+                  userData!.firstName,
+                  userData!.lastName,
+                  parseInt(userData!.phoneNumber)
+                );
               }
-
-              return copiedCurrentValue;
-            });
-
-            setCurrentStageId((currentValue) => (currentValue < stages.length ? currentValue + 1 : currentValue));
-
-            if (stages[currentStageIndex]!.componentKey === "Summary") {
-              const { weapons, date, userData } = userSelectedDataSignal.value;
-
-              const weaponsId = weapons.map((data) => data.id);
-
-              const response = await reservationAdd(
-                date!.start,
-                date!.end,
-                weaponsId,
-                userData!.email,
-                userData!.firstName,
-                userData!.lastName,
-                parseInt(userData!.phoneNumber)
-              );
             }
           }}>
           {areAllStagesDone === true ? "Gotowe!" : stages[currentStageIndex]!.componentKey === "Summary" ? "Wyślij rezerwację" : "Dalej"}
