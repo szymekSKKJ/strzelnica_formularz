@@ -42,6 +42,12 @@ const AdminPanel = () => {
       title: "Rezerwacje",
       icon: <i className="fa-solid fa-users"></i>,
     },
+    {
+      id: 7,
+      href: "/admin_panel/tory",
+      title: "Tory",
+      icon: <i className="fa-regular fa-road"></i>,
+    },
   ];
 
   return (

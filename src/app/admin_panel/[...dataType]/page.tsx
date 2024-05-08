@@ -3,12 +3,14 @@ import { availableReservationHourGetSome } from "@/app/api/availableReservationH
 import { manufacturerOfAmmunitionGetSome } from "@/app/api/manufacturerOfAmmunition/get/some/route";
 import { manufacturerOfWeaponGetSome } from "@/app/api/manufacturerOfWeapon/get/some/route";
 import { reservationGetSome } from "@/app/api/reservation/get/some/route";
+import { trackGetSome } from "@/app/api/track/get/some/route";
 import { weaponGetSome } from "@/app/api/weapon/get/some/route";
 import AmmunitionEditor from "@/components/AdminPanel/AmmunitionEditor/AmmunitionEditor";
 import AvailableHoursEditor from "@/components/AdminPanel/AvailableHoursEditor/AvailableHoursEditor";
 import ManufacturerOfAmmunitionEditor from "@/components/AdminPanel/ManufacturerOfAmmunitionEditor/ManufacturerOfAmmunitionEditor";
 import ManufacturerOfWeaponEditor from "@/components/AdminPanel/ManufacturerOfWeaponEditor/ManufacturerOfWeaponEditor";
 import ReservationEditor from "@/components/AdminPanel/ReservationEditor/ReservationEditor";
+import TrackEditor from "@/components/AdminPanel/TrackEditor/TrackEditor";
 import WeaponEditor from "@/components/AdminPanel/WeaponEditor/WeaponEditor";
 
 interface componentProps {
@@ -64,6 +66,14 @@ const availableRoutes = [
     },
     editor: ReservationEditor,
   },
+  {
+    route: "tory",
+    title: "Tory",
+    getDataCallback: async () => {
+      return await trackGetSome();
+    },
+    editor: TrackEditor,
+  },
 ];
 
 const DataTypePage = async ({ params: { dataType } }: componentProps) => {
@@ -75,8 +85,6 @@ const DataTypePage = async ({ params: { dataType } }: componentProps) => {
     const dataResponse = await foundRoute.getDataCallback();
 
     const { editor: Editor } = foundRoute;
-
-    console.log(dataResponse);
 
     if (dataResponse.error === null) {
       //@ts-ignore
