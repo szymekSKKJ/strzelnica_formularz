@@ -66,7 +66,7 @@ export const addWeaponsToUserSelectedData = (
   userSelectedDataSignal.value = copiedValue;
 };
 
-export const addDateToUserSelectedData = (date: { start: Date; end: Date }) => {
+export const addDateToUserSelectedData = (date: { start: Date; end: Date } | null) => {
   const copiedValue = { ...userSelectedDataSignal.value };
 
   copiedValue.date = date;

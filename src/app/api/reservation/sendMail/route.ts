@@ -21,7 +21,7 @@ const reservationSendMail = async (emailTo: string, htmlContent: string) => {
     html: htmlContent,
   };
 
-  const response = await transporter.sendMail(message);
+  await transporter.sendMail(message);
 };
 
 export default reservationSendMail;

@@ -1,5 +1,5 @@
 import styles from "./styles.module.scss";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { addDateToUserSelectedData, userSelectedDataSignal } from "../ReservationVisitForm";
 import DataPicker from "./DataPicker/DataPicker";
 import { availableReservationHourGetSome } from "@/app/api/availableReservationHour/get/some/route";
@@ -43,9 +43,7 @@ const ChoosDate = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (pickedDate !== null) {
-      addDateToUserSelectedData(pickedDate);
-    }
+    addDateToUserSelectedData(pickedDate);
   }, [pickedDate]);
 
   useEffect(() => {
