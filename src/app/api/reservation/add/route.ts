@@ -74,9 +74,11 @@ const POST = async (request: NextRequest) => {
             hour: "numeric",
             minute: "numeric",
             weekday: "long",
+            timeZone: "Europe/Warsaw",
           })} - ${bookedForEnd.toLocaleTimeString("pl-PL", {
         hour: "numeric",
         minute: "numeric",
+        timeZone: "Europe/Warsaw",
       })}
           </p>
           <p>Nr telefonu: ${phoneNumber}</p>
