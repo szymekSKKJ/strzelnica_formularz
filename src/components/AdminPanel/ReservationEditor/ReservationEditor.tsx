@@ -5,6 +5,7 @@ import styles from "./styles.module.scss";
 import { useRouter } from "next/navigation";
 import { Table, Cell, Row } from "@szymekskkj/table";
 import { useState } from "react";
+import { reservationDelete } from "@/app/api/reservation/delete/route";
 
 interface ReservationEditorProps {
   data: {
@@ -26,7 +27,7 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
 
       return {
         ...data,
-
+        isSelected: false,
         bookedForStart: new Date(bookedForStart),
         bookedForEnd: new Date(bookedForEnd),
       };
@@ -36,10 +37,10 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
   const router = useRouter();
 
   const headers = [
-    // {
-    //   key: "isSelected",
-    //   displayName: "",
-    // },
+    {
+      key: "isSelected",
+      displayName: "",
+    },
     {
       key: "id",
       displayName: "id",
@@ -105,6 +106,30 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
         </Button>
       </div>
       <h2>Rezerwacje</h2>
+      <div className={`${styles.selectedItemsActions}`}>
+        <button
+          className={`${styles.delete}`}
+          onClick={async () => {
+            const rowsToDelete = data.filter((data) => data.isSelected === true);
+
+            await Promise.all(
+              rowsToDelete.map(async (data) => {
+                const { id } = data;
+                await reservationDelete(id);
+              })
+            );
+
+            setData((currentValue) => {
+              const copiedCurrentValue = [...currentValue];
+
+              const dataWithoutSelectedRows = copiedCurrentValue.filter((data) => data.isSelected === false);
+
+              return dataWithoutSelectedRows;
+            });
+          }}>
+          <i className="fa-regular fa-trash-can"></i>
+        </button>
+      </div>
       <div className={`${styles.tableWrapper}`}>
         <Table headers={headers} setData={setData}>
           {data.map((data) => {
@@ -116,7 +141,7 @@ const ReservationEditor = ({ data: initialData }: ReservationEditorProps) => {
               <Row key={id}>
                 {Object.values(data).map((value, index) => {
                   return (
-                    <Cell key={columnKeys[index]} type={"text"} isEditable={false}>
+                    <Cell key={columnKeys[index]} isEditable={false}>
                       {value}
                     </Cell>
                   );
