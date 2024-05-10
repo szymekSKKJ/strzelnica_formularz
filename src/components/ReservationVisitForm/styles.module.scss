@@ -1,14 +1,14 @@
 .reservationVisitForm {
   width: 80dvw;
-  height: 90dvh;
+  height: 80dvh;
   display: flex;
   gap: 25px;
-  margin: 50px auto 0px auto;
+  margin: 20px auto 0px auto;
 
   @media screen and (width <= 1024px) {
     flex-direction: column;
     width: calc(100dvw - 30px);
-    height: calc(100dvh - 30px);
+    height: calc(100dvh - 110px);
     margin: 15px auto 0px auto;
     gap: 15px;
   }
