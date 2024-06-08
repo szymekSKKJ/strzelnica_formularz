@@ -81,7 +81,7 @@ const ChooseWeapon = () => {
       };
     });
 
-    addWeaponsToUserSelectedData(changedData);
+    addWeaponsToUserSelectedData(changedData); // Tutaj widzisz, że aktualizuje się nasz signal z danymi użytkownika (lewy ctrl + lewy przycisk myszy)
   }, [weaponsData]);
 
   const chooseWeaponType = weaponeTypes.find((data) => data.choosen);

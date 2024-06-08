@@ -32,7 +32,6 @@ const Summary = () => {
             })}
           </div>
         </div>
-
         <div className={`${styles.date}`}>
           <h3>Termin</h3>
           <div className={`${styles.content}`}>

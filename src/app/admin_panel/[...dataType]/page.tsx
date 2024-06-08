@@ -79,6 +79,8 @@ const availableRoutes = [
 const DataTypePage = async ({ params: { dataType } }: componentProps) => {
   const firstRouteSegment = dataType[0];
 
+  console.log(dataType);
+
   const foundRoute = availableRoutes.find((data) => data.route === firstRouteSegment);
 
   if (foundRoute) {

@@ -49,7 +49,7 @@ const ChoosDate = () => {
   });
 
   useEffect(() => {
-    addDateToUserSelectedData(pickedDate);
+    addDateToUserSelectedData(pickedDate); // O w tym miejscu się wykonuje (lewy ctrl + lewy pczysik myszy przeniesie cię do deklaracji)
   }, [pickedDate]);
 
   useEffect(() => {

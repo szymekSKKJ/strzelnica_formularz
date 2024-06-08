@@ -22,9 +22,9 @@ const ProvideUserData = () => {
     const isAnyValueEmpty = Object.values(userData).some((value) => value === null);
 
     if (isAnyValueEmpty === false) {
-      addUserDataToUserSelectedData(userData as { firstName: string; lastName: string; email: string; phoneNumber: string });
+      addUserDataToUserSelectedData(userData as { firstName: string; lastName: string; email: string; phoneNumber: string }); // Tutaj się wykonuje dodanie danych presonalnych użytkownika
     } else {
-      addUserDataToUserSelectedData(null);
+      addUserDataToUserSelectedData(null); // A tutaj ustawiamy null jeżeli jakikolwiek input jest pusty
     }
   }, [userData]);
 
